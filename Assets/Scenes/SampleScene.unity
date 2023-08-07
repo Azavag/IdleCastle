@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 814088786}
   m_Layer: 0
   m_Name: CannonObject
-  m_TagString: Untagged
+  m_TagString: Cannon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -337,7 +337,7 @@ MonoBehaviour:
   cannonHead: {fileID: 814088787}
   firePoint: {fileID: 1750798417}
   bulletSpeed: 100
-  timeBetweenShots: 0.1
+  timeBetweenShots: 0.5
   mainCamera: {fileID: 963194227}
   cannonBallPrefab: {fileID: 5501486885750846259, guid: cdb29a72f41600a4f9b03f2459a89ae8, type: 3}
   cannonBallsAmount: 25

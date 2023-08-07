@@ -41,4 +41,13 @@ public class EnemyController : MonoBehaviour
             m_Rigidbody.MovePosition(transform.position + moveDirectionVector * Time.deltaTime * enemyData.m_Speed);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Cannon")
+        {
+            Destroy(gameObject);
+            collision.gameObject.SetActive(false);
+        }
+    }
+
 }
