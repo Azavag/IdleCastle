@@ -11,8 +11,6 @@ public class EnemyScriptableObject : ScriptableObject
     public int health;
     public int damage;
 
-    //public Material material;
-    //public Mesh meshModel;
     public GameObject prefab;
 
 }

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05a43cdeeaffc044d8e6c62161acfc74, type: 3}
-  m_Name: RedZombie
+  m_Name: Bear
   m_EditorClassIdentifier: 
-  enemyName: RedZombie
-  speed: 10
-  health: 10
+  enemyName: Bear
+  speed: 30
+  health: 30
   damage: 1
   prefab: {fileID: 5302883033628102225, guid: e83100e6d3f119145857c2b8c7a17011, type: 3}

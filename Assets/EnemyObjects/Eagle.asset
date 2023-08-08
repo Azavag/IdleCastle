@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05a43cdeeaffc044d8e6c62161acfc74, type: 3}
-  m_Name: Zombie
+  m_Name: Eagle
   m_EditorClassIdentifier: 
-  enemyName: GreenZombie
-  speed: 20
+  enemyName: Eagle
+  speed: 50
   health: 10
   damage: 1
   prefab: {fileID: 5419428117253933927, guid: d4073e98fd814334f910d67eafbfabe4, type: 3}
