@@ -4,6 +4,6 @@ using UnityEngine;
 
 interface IDamagable
 {
-    void ApplyDamage(int damageValue);
+    void ApplyDamage(float damageValue);
 
 }

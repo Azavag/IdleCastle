@@ -7,7 +7,7 @@ public class CannonBallController : MonoBehaviour
 {
     Vector3 shootVector;
     float bulletSpeed;
-    int damage;
+    float damage;
     void Start()
     {
         
@@ -28,7 +28,7 @@ public class CannonBallController : MonoBehaviour
     {
         bulletSpeed = speed;
     }
-    public void SetShootDamage(int dmg)
+    public void SetShootDamage(float dmg)
     {
         damage = dmg;
     }

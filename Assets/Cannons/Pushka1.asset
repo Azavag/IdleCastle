@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05a43cdeeaffc044d8e6c62161acfc74, type: 3}
-  m_Name: Bear
+  m_Script: {fileID: 11500000, guid: cb9ada976ba0dd54389332c242064e62, type: 3}
+  m_Name: Pushka1
   m_EditorClassIdentifier: 
-  enemyName: Bear
-  speed: 10
-  health: 30
-  damage: 1
-  prefab: {fileID: 5302883033628102225, guid: e83100e6d3f119145857c2b8c7a17011, type: 3}
+  cannonName: Pushka1
+  price: 100
+  cannonModel: {fileID: 2148412744993183594, guid: bcdf16fb31606674bbe7f43f47fcd1ec, type: 3}

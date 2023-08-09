@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rhino
   m_EditorClassIdentifier: 
   enemyName: Rhino
-  speed: 25
+  speed: 15
   health: 15
   damage: 1
   prefab: {fileID: 2171168134651339925, guid: 98853ad042f48e942a947f626e84ab4f, type: 3}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Eagle
   m_EditorClassIdentifier: 
   enemyName: Eagle
-  speed: 50
+  speed: 20
   health: 10
   damage: 1
   prefab: {fileID: 5419428117253933927, guid: d4073e98fd814334f910d67eafbfabe4, type: 3}

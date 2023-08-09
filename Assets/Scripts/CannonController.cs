@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CannonController : MonoBehaviour
 {
     public Transform cannonBody;
     public Transform firePoint;
-
+    public CannonScriptableObject cannonScriptableObject;
     [SerializeField] float bulletSpeed;
     [SerializeField] float timeBetweenShots;
-    [SerializeField] int bulletDamage;
+    [SerializeField] float bulletDamage;
+    
     float timer;
     float minAngle = -45.0f;
     float maxAngle = 45.0f;
@@ -23,10 +25,15 @@ public class CannonController : MonoBehaviour
 
     private void Start()
     {
+       
+       GameObject cannonModel = Instantiate(cannonScriptableObject.cannonModel, transform.position,
+            Quaternion.identity, transform);
+        cannonModel.name = "CannonBody_" + cannonScriptableObject.cannonName;
+        cannonBody = cannonModel.transform;
+        firePoint = cannonModel.transform.Find("FirePoint");
+
         cannonBallPool.CreateCannonBallsPool();
         canShoot = false;
-
-        Input.mousePosition.Set(0,0,0);
 
         ResetTimer();
     }
@@ -90,12 +97,16 @@ public class CannonController : MonoBehaviour
         timer = timeBetweenShots;
     }
 
-    public void ChangeDamage(int diff)
+    public void ChangeBulletsDamage(float diff)
     {
         bulletDamage += diff ;
     }
-    public void ChangeRate(float diff)
+    public void ChangeBulletsRate(float diff)
     {
         timeBetweenShots += diff;
+    }
+    public void ChangeBulletsSpeed(float diff)
+    {
+        bulletSpeed += diff;
     }
 }

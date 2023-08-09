@@ -14,54 +14,54 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] GameObject secondBorderObject;
     float xPosition;
     float zPosition; 
-    float timer;
 
     [SerializeField] EnemyController enemyObject;
 
-    bool isStartSpawn;
+    bool spawnState;
     void Start()
     {
         
-        ResetTimer();
+
         
     }
 
     void Update()
     {
-        timer -= Time.deltaTime;
-        if (timer < 0 && LimitSpawnCheck() && isStartSpawn)
+        if (spawnState)
         {
-            SpawnEnemy();
-            ResetTimer();
+            StartCoroutine(SpawnEnemies(waveEnemyCount));
+            SetSpawnState(false);
         }
     }
 
-    void ResetTimer()
+
+    IEnumerator SpawnEnemies(int enemiesCount)
     {
-        timer = timeBetweenSpawn;
+        for (int count = 0; count < enemiesCount; count++)
+        {
+            SpawnEnemy();
+            yield return new WaitForSeconds(timeBetweenSpawn);
+        }
+        
     }
 
-    public void SetStartSpawn(bool state)
+    public void SetSpawnState(bool state)
     {
-        isStartSpawn = state;
+        spawnState = state;
         spawnedEnemyCount = 0;
     }
     void SpawnEnemy()
     {
         spawnedEnemyCount++;
 
-        //ÕÀÐÄÊÎÄ
+        //!!! ïîçèöèÿ ïî âûñîòå
         float yPos = 1.5f;
+
         GeneratePos(firstBorderObject, secondBorderObject);
         EnemyController enemy = Instantiate(enemyObject, new Vector3(xPosition, yPos, zPosition),
             Quaternion.LookRotation(new Vector3(0, 0, -1)), this.transform);
 
 
-    }
-
-    bool LimitSpawnCheck()
-    {
-        return spawnedEnemyCount < waveEnemyCount ? true : false;
     }
 
     void GeneratePos(GameObject firstBorderObject, GameObject secondBorderObject)

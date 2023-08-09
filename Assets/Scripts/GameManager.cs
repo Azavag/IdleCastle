@@ -28,14 +28,14 @@ public class GameManager : MonoBehaviour
 
     public void OnStartGame()
     {
-        enemySpawner.SetStartSpawn(true);
+        enemySpawner.SetSpawnState(true);
         cannonController.ChangeShootState();
         menuCanvas.gameObject.SetActive(false);
     }
 
     public void OnEndGame()
     {
-        enemySpawner.SetStartSpawn(false);
+        enemySpawner.SetSpawnState(false);
         menuCanvas.gameObject.SetActive(true);
     }
 

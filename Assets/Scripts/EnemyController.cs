@@ -40,7 +40,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     {
         if (other.gameObject.CompareTag("Castle"))
         {
-            FinalZone finalZone = other.gameObject.GetComponent<FinalZone>();
+            CastleController finalZone = other.gameObject.GetComponent<CastleController>();
 
             //Атака
             if (finalZone.TryGetComponent(out IDamagable damagable))
@@ -55,7 +55,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
 
 
-    public void ApplyDamage(int damageValue)
+    public void ApplyDamage(float damageValue)
     {
         enemyData.currentHealth -= damageValue;
         ChangeHealtBarValue();

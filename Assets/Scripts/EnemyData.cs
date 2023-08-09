@@ -14,9 +14,9 @@ public class EnemyData : MonoBehaviour
     BoxCollider boxCollider;
     public float colliderScale { get; set; }
     public float moveSpeed { get; set; }
-    public int maxHealth { get; set; }
-    public int currentHealth { get; set; }
-    public int damage { get; set; }
+    public float maxHealth { get; set; }
+    public float currentHealth { get; set; }
+    public float damage { get; set; }
     private void Start()
     {
         meshRenderer = GetComponentInChildren<MeshRenderer>();
