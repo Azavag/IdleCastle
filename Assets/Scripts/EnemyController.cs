@@ -72,7 +72,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     IEnumerator DeathProcess()
     {
         moneyText.text = "+" + enemyData.cost.ToString() + "$";
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0f);
 
         Death();
 
@@ -80,8 +80,7 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     void Death() 
     {
-        EventManager.OnEnemyDied(enemyData.cost);
-        //Destroy(gameObject);
+        EventManager.OnEnemyDied(enemyData.cost);        
         gameObject.SetActive(false);
     }
 

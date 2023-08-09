@@ -327,6 +327,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7703982783087182167, guid: 4d10efdec9e1a3842b836a2cf06430c9, type: 3}
   m_PrefabInstance: {fileID: 218831529}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &244375810
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244375811}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &244375811
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244375810}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.50964, y: 0, z: -28.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &244390340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,7 +1690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e0f47b78774b4449cf09d9b7c61adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveEnemyCount: 10
+  waveEnemyCount: 100
   timeBetweenSpawn: 3
   firstBorderObject: {fileID: 1959067235}
   secondBorderObject: {fileID: 714403119}
@@ -3567,7 +3598,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6806496021546883924, guid: c15425ac8174afc45af07e26932cd5a2, type: 3}
       propertyPath: maxHealth
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6806496021546883924, guid: c15425ac8174afc45af07e26932cd5a2, type: 3}
       propertyPath: healthText
@@ -3713,3 +3744,4 @@ SceneRoots:
   - {fileID: 244390341}
   - {fileID: 1947158204}
   - {fileID: 1093073212}
+  - {fileID: 244375811}
