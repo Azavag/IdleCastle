@@ -8,6 +8,7 @@ public class EnemyScriptableObject : ScriptableObject
     public float health;
     public float damage;
     public float moneyCost;
+    public float timeBetweenAtack;
 
     public GameObject prefab;
 

@@ -8,6 +8,7 @@ public class CastleController : MonoBehaviour, IDamagable
     
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] float maxHealth;
+    [SerializeField] GameManager gameManager;
     float currentHealth;  
 
     private void Start()
@@ -19,12 +20,14 @@ public class CastleController : MonoBehaviour, IDamagable
        
     }
 
-    void ResetHealth()
-    {        
+    public void ResetHealth()
+    {
+        gameObject.SetActive(true);
         currentHealth = maxHealth;
-        UpdateText();
+        UpdateHealthText();
     }
-    void UpdateText()
+    //Через эвент
+    void UpdateHealthText()
     {
         healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
     }
@@ -36,17 +39,16 @@ public class CastleController : MonoBehaviour, IDamagable
         {
             Death();
         }
-        UpdateText();
+        UpdateHealthText();
     }
     void Death()
-    {
-        Debug.Log("Поражение");
+    {      
         gameObject.SetActive(false);
-
+        gameManager.OnEndGame();
     }
 
 
-    public void UpgradeHealth(float diff)
+    public void ChangeMaxHealth(float diff)
     {
         maxHealth += diff;
         ResetHealth();

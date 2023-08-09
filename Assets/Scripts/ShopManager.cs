@@ -13,8 +13,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] float bulletSpeedUpgrade;
     [SerializeField] float bulletDamageUpgrade;
 
-    float moneyCount;
-    [SerializeField] TextMeshProUGUI moneyCountText;
+    [SerializeField] MoneyManager moneyManager;
 
     // Start is called before the first frame update
     void Start()
@@ -31,18 +30,14 @@ public class ShopManager : MonoBehaviour
 
     public void UpgradeCastle()
     {
-        castleController.UpgradeHealth(healthUpgrade);
+        castleController.ChangeMaxHealth(healthUpgrade);
     }
 
     void ChangeMoneyCount(float dif)
     {
-        moneyCount += dif;
-        UpdateMoneyText();
+        moneyManager.MoneyCount += dif;
     }
 
-    private void UpdateMoneyText()
-    {
-        moneyCountText.text = moneyCount.ToString();
-    }
+    
 
 }

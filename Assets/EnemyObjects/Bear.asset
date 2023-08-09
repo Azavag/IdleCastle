@@ -16,4 +16,6 @@ MonoBehaviour:
   speed: 10
   health: 30
   damage: 1
+  moneyCost: 5
+  timeBetweenAtack: 1
   prefab: {fileID: 5302883033628102225, guid: e83100e6d3f119145857c2b8c7a17011, type: 3}

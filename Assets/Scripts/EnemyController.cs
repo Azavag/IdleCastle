@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
@@ -7,7 +8,8 @@ public class EnemyController : MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
     Rigidbody rb;
-    Slider healthBarSlider;
+    //Slider healthBarSlider;
+    TextMeshProUGUI moneyText;
    
     bool isMoving;                          //Движение
     public float scale { set; get; }        //Размер коллайдера
@@ -17,18 +19,18 @@ public class EnemyController : MonoBehaviour, IDamagable
     {      
         enemyData = GetComponent<EnemyData>();
         rb = GetComponent<Rigidbody>();
-        healthBarSlider = GetComponentInChildren<Slider>();
+       // healthBarSlider = GetComponentInChildren<Slider>();
+        moneyText = GetComponentInChildren<TextMeshProUGUI>();
         rb.WakeUp();
         scale = enemyData.colliderScale;
-        healthBarSlider.maxValue = enemyData.maxHealth;
+        //healthBarSlider.maxValue = enemyData.maxHealth;
 
-        StartMoving();
+        ChangeMoveState(true);
     }
-   
 
-    void StartMoving()
+    public void ChangeMoveState(bool state)
     {
-        isMoving = true;
+        isMoving = state;
     }
     private void Update()
     {       
@@ -54,26 +56,39 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     }
 
-
     public void ApplyDamage(float damageValue)
     {
         enemyData.currentHealth -= damageValue;
-        ChangeHealtBarValue();
+        //ChangeHealtBarValue();
         if (enemyData.currentHealth <= 0)
         {
-            Death();
+            ChangeMoveState(false);
+            StartCoroutine(DeathProcess());
+            
         }
         
+    }
+    //Прибавление денег и уничтожение 
+    IEnumerator DeathProcess()
+    {
+        moneyText.text = "+" + enemyData.cost.ToString() + "$";
+        yield return new WaitForSeconds(0.3f);
+
+        Death();
+
     }
 
     void Death() 
     {
-        Destroy(gameObject);
-        Debug.Log(name + "Умер");
+        EventManager.OnEnemyDied(enemyData.cost);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     void ChangeHealtBarValue()
     {
-        healthBarSlider.value = enemyData.currentHealth;
+        //healthBarSlider.value = enemyData.currentHealth;
     }
+
+    
 }

@@ -74,9 +74,9 @@ public class CannonController : MonoBehaviour
         else return;
     }
 
-    public void ChangeShootState()
+    public void ChangeShootState(bool state)
     {
-        canShoot = true;
+        canShoot = state;
     }
 
     void Shoot()

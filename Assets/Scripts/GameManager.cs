@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] EnemySpawner enemySpawner;
     [SerializeField] CannonController cannonController;
+    [SerializeField] CastleController castleController;
     [SerializeField] Button startButton;
     [SerializeField] Canvas menuCanvas;
 
@@ -21,7 +22,6 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
             OnEndGame();
         }
     }
@@ -29,13 +29,17 @@ public class GameManager : MonoBehaviour
     public void OnStartGame()
     {
         enemySpawner.SetSpawnState(true);
-        cannonController.ChangeShootState();
+        enemySpawner.StartSpawn();
+        castleController.ResetHealth();
+        cannonController.ChangeShootState(true);
         menuCanvas.gameObject.SetActive(false);
     }
 
     public void OnEndGame()
     {
         enemySpawner.SetSpawnState(false);
+        enemySpawner.StopAllEnemies();
+        cannonController.ChangeShootState(false);
         menuCanvas.gameObject.SetActive(true);
     }
 
