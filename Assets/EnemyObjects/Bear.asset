@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bear
   m_EditorClassIdentifier: 
   enemyName: Bear
-  speed: 10
+  speed: 30
   health: 30
   damage: 1
   moneyCost: 5

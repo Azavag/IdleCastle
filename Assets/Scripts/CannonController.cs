@@ -5,51 +5,80 @@ using UnityEngine;
 
 public class CannonController : MonoBehaviour
 {
-    public Transform cannonBody;
-    public Transform firePoint;
-    public CannonScriptableObject cannonScriptableObject;
+    public CannonScriptableObject cannonType;
+    [SerializeField] Camera mainCamera;
+    [SerializeField] BulletsPool bulletsPool;
+
     [SerializeField] float bulletSpeed;
     [SerializeField] float timeBetweenShots;
     [SerializeField] float bulletDamage;
-    
-    float timer;
+
+    Transform cannonBody;
+    Transform firePoint;
+    GameObject cannonModel;
+
+    float ShootTimer;
     float minAngle = -45.0f;
     float maxAngle = 45.0f;
     float clampedAngleY;
-    float shootXVector;
     bool canShoot;
-    [SerializeField] Camera mainCamera;
-
-    [SerializeField] CannonBallPool cannonBallPool;
+    
 
 
     private void Start()
     {
        
-       GameObject cannonModel = Instantiate(cannonScriptableObject.cannonModel, transform.position,
-            Quaternion.identity, transform);
-        cannonModel.name = "CannonBody_" + cannonScriptableObject.cannonName;
-        cannonBody = cannonModel.transform;
-        firePoint = cannonModel.transform.Find("FirePoint");
-
-        cannonBallPool.CreateCannonBallsPool();
+        bulletsPool.CreateBulletsPool();
+       
         canShoot = false;
-
         ResetTimer();
     }
 
-    
+    public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
+    {
+        Destroy(cannonModel);
+        cannonType = cannonScriptableObject;
+        cannonModel = Instantiate(cannonType.cannonModel, transform.position,
+           Quaternion.identity, transform);
+        cannonModel.name = "CannonBody_" + cannonType.cannonName;
+        cannonBody = cannonModel.transform;
+        firePoint = cannonModel.transform.Find("FirePoint");
+
+        SetCannonStats(cannonType);
+    }
+
+    void SetCannonStats(CannonScriptableObject cannonType)
+    {
+        bulletDamage = this.cannonType.bulletDamage;
+        timeBetweenShots = this.cannonType.timeBetweenShots;
+        bulletSpeed = this.cannonType.bulletSpeed;
+
+    }
+
     private void Update()
     {
-        timer -= Time.deltaTime;
+        ShootTimer -= Time.deltaTime;
 
         RotateCannon();
 
-        if (timer <= 0 && Input.GetMouseButton(0))
+        if (ShootTimer <= 0 && Input.GetMouseButton(0))
         {
             Shoot();
             ResetTimer();
         }
+    }
+
+    public void ChangeBulletsDamage(float diff)
+    {
+        bulletDamage += diff;
+    }
+    public void ChangeBulletsRate(float diff)
+    {
+        timeBetweenShots += diff;
+    }
+    public void ChangeBulletsSpeed(float diff)
+    {
+        bulletSpeed += diff;
     }
     //Поворот пукшки на угол
     private void RotateCannon()
@@ -84,29 +113,20 @@ public class CannonController : MonoBehaviour
         if (canShoot)
         {
             // Создаем пулю и задаем ей начальную позицию, направление и скорость
-            CannonBallController spawnedCannonball = cannonBallPool.SpawnFromPool(firePoint.position);
-            spawnedCannonball.SetShootVector(firePoint.forward);
-            spawnedCannonball.SetShootSpeed(bulletSpeed);
-            spawnedCannonball.SetShootDamage(bulletDamage);
+            BulletController spawneBullet = bulletsPool.SpawnFromPool(firePoint.position);
+            spawneBullet.SetShootVector(firePoint.forward);
+            spawneBullet.SetShootSpeed(bulletSpeed);
+            spawneBullet.SetShootDamage(bulletDamage);
         }
         else return;
 
     }
     void ResetTimer()
     {
-        timer = timeBetweenShots;
+        ShootTimer = timeBetweenShots;
     }
 
-    public void ChangeBulletsDamage(float diff)
-    {
-        bulletDamage += diff ;
-    }
-    public void ChangeBulletsRate(float diff)
-    {
-        timeBetweenShots += diff;
-    }
-    public void ChangeBulletsSpeed(float diff)
-    {
-        bulletSpeed += diff;
-    }
+   
+
+   
 }

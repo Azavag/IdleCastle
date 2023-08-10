@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rhino
   m_EditorClassIdentifier: 
   enemyName: Rhino
-  speed: 15
+  speed: 25
   health: 15
   damage: 1
   moneyCost: 1

@@ -6,6 +6,7 @@ public class EnemyData : MonoBehaviour
 {
     EnemyScriptableObject enemyType;
     [SerializeField] GameObject prefabModel;
+    [SerializeField] 
 
 
     BoxCollider boxCollider;
@@ -16,6 +17,9 @@ public class EnemyData : MonoBehaviour
     public float damage { get; set; }
     public float cost { get; set; }
 
+    float costMultiplier;
+
+
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -24,6 +28,15 @@ public class EnemyData : MonoBehaviour
         SetEnemyData();
 
     }
+    public void ChooseEnemyType(EnemyScriptableObject type)
+    {
+        enemyType = type;
+    }
+    public void SetCostMultiplier(float multiplier)
+    {
+        costMultiplier = multiplier;
+    }
+
 
     void SetEnemyData()
     {
@@ -35,14 +48,11 @@ public class EnemyData : MonoBehaviour
         currentHealth = maxHealth;
         damage = enemyType.damage;
         moveSpeed = enemyType.speed;
-        cost = enemyType.moneyCost;
+        cost = enemyType.moneyCost * costMultiplier;
         this.name = enemyType.enemyName;
     }
 
-    public void ChooseEnemyType(EnemyScriptableObject type)
-    {
-        enemyType = type;
-    }
+   
 
 
 }

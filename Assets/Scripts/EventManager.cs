@@ -10,5 +10,6 @@ public class EventManager : MonoBehaviour
     {
         EnemyDied?.Invoke(cost);
     }
+
 }
 

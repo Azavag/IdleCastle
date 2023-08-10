@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 1827054104027305762}
   - component: {fileID: 6676535614738000402}
   - component: {fileID: 5704258610953738427}
+  - component: {fileID: 6886446933515816362}
   m_Layer: 5
   m_Name: MoneyText
   m_TagString: Untagged
@@ -409,6 +410,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6886446933515816362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6062378727867897524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5d3f56a20bb1e488f601bd9c63da03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7595886903244835690
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,7 +555,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9190357876521905529}

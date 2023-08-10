@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CannonBallController : MonoBehaviour
+public class BulletController : MonoBehaviour
 {
     Vector3 shootVector;
     float bulletSpeed;
-    float damage;
+    float bulletDamage;
+    float rangeLimitX = 200f, rangeLimitZ = 250f;
     void Start()
     {
         
@@ -18,6 +19,9 @@ public class CannonBallController : MonoBehaviour
     {
         if(shootVector != null && bulletSpeed != 0)
             transform.Translate(shootVector * bulletSpeed);
+
+        if(!CheckLimitPosition())
+            ResetBulletPostion();
     }
 
     public void SetShootVector(Vector3 vec)
@@ -30,7 +34,7 @@ public class CannonBallController : MonoBehaviour
     }
     public void SetShootDamage(float dmg)
     {
-        damage = dmg;
+        bulletDamage = dmg;
     }
 
     //При прикосновении пули
@@ -42,15 +46,28 @@ public class CannonBallController : MonoBehaviour
             EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
             if(enemy.TryGetComponent(out IDamagable damagable))
             {
-                damagable.ApplyDamage(damage);
+                damagable.ApplyDamage(bulletDamage);
                 
             }
             
-            gameObject.SetActive(false);
-
             
+            ResetBulletPostion();
         }
 
+    }
+
+    void ResetBulletPostion()
+    {
+        gameObject.SetActive(false);
+        SetShootSpeed(0);
+        SetShootVector(new Vector3(0, 0, 0));
+        gameObject.transform.position = gameObject.transform.parent.position;
+    }
+
+    bool CheckLimitPosition()
+    {
+        return (Mathf.Abs(transform.position.x) < rangeLimitX ||
+            Mathf.Abs(transform.position.z) < rangeLimitZ);
     }
 
 }

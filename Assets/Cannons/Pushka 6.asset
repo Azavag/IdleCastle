@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb9ada976ba0dd54389332c242064e62, type: 3}
-  m_Name: Pushka1
+  m_Name: Pushka 6
   m_EditorClassIdentifier: 
   cannonName: Pushka1
   price: 100
-  cannonModel: {fileID: 2148412744993183594, guid: bcdf16fb31606674bbe7f43f47fcd1ec, type: 3}
+  cannonModel: {fileID: 3500609581495502720, guid: 83af3b9cdafa1be4e8ceda1a5bb220ea, type: 3}

@@ -2,16 +2,16 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Input = UnityEngine.Input;
 
 public class EnemyController : MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
     Rigidbody rb;
-    //Slider healthBarSlider;
-    TextMeshProUGUI moneyText;
-   
+    Canvas enemyCanvas;
     bool isMoving;                          //Движение
+
     public float scale { set; get; }        //Размер коллайдера
 
     
@@ -19,11 +19,10 @@ public class EnemyController : MonoBehaviour, IDamagable
     {      
         enemyData = GetComponent<EnemyData>();
         rb = GetComponent<Rigidbody>();
-       // healthBarSlider = GetComponentInChildren<Slider>();
-        moneyText = GetComponentInChildren<TextMeshProUGUI>();
+        enemyCanvas = GetComponentInChildren<Canvas>();
         rb.WakeUp();
         scale = enemyData.colliderScale;
-        //healthBarSlider.maxValue = enemyData.maxHealth;
+
 
         ChangeMoveState(true);
     }
@@ -36,6 +35,8 @@ public class EnemyController : MonoBehaviour, IDamagable
     {       
         if (isMoving)
             transform.Translate(enemyData.moveSpeed * Time.deltaTime * Vector3.forward);
+
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -59,35 +60,37 @@ public class EnemyController : MonoBehaviour, IDamagable
     public void ApplyDamage(float damageValue)
     {
         enemyData.currentHealth -= damageValue;
-        //ChangeHealtBarValue();
+
         if (enemyData.currentHealth <= 0)
         {
             ChangeMoveState(false);
-            StartCoroutine(DeathProcess());
+            DeathProcess();
             
         }
         
     }
     //Прибавление денег и уничтожение 
-    IEnumerator DeathProcess()
+    void DeathProcess()
     {
-        moneyText.text = "+" + enemyData.cost.ToString() + "$";
-        yield return new WaitForSeconds(0f);
+        
+        enemyCanvas.transform.SetParent(null);
+        enemyCanvas.gameObject.transform.position = transform.position;
+        MoneyTextController mtc = enemyCanvas.GetComponentInChildren<MoneyTextController>();
+        mtc.StartAnimate(enemyData.cost);
+
+
 
         Death();
 
     }
 
+   
+
     void Death() 
     {
+        
         EventManager.OnEnemyDied(enemyData.cost);        
         gameObject.SetActive(false);
     }
-
-    void ChangeHealtBarValue()
-    {
-        //healthBarSlider.value = enemyData.currentHealth;
-    }
-
     
 }

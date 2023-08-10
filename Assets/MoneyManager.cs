@@ -6,24 +6,38 @@ using UnityEngine;
 public class MoneyManager : MonoBehaviour
 {    
     public float MoneyCount { set; get; }
+    public float MoneyMultiplier { set; get; }
     [SerializeField] TextMeshProUGUI moneyCountText;
-    
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        EventManager.EnemyDied += OnEnemyDied;
+    }
     void Start()
     {
         MoneyCount = 0;
-        UpdateMoneyText();
-        EventManager.EnemyDied += OnEnemyDied;
+        MoneyMultiplier = 1;
+        UpdateMoneyText();       
     }
 
     void OnEnemyDied(float cost)
     {
-        MoneyCount += cost;
+        ChangeMoneyCount(cost);
+    }
+    
+    void ChangeMoneyCount(float diff)
+    {
+        MoneyCount += diff;
         UpdateMoneyText();
     }
-    private void UpdateMoneyText()
+    void UpdateMoneyText()
     {
-        moneyCountText.text = MoneyCount.ToString();
+        moneyCountText.text = MoneyCount.ToString("#.##") + "$";
+    }
+
+    public void ChangeMoneyMultiplier(float diff)
+    {
+        MoneyMultiplier += diff;
     }
 
 }

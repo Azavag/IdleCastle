@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Eagle
   m_EditorClassIdentifier: 
   enemyName: Eagle
-  speed: 20
+  speed: 35
   health: 10
   damage: 1
   moneyCost: 1

@@ -5,6 +5,9 @@ public class CannonScriptableObject : ScriptableObject
 {
     public string cannonName;
     public float price;
+    public float bulletSpeed;
+    public float timeBetweenShots;
+    public float bulletDamage;
 
     public GameObject cannonModel;
    
