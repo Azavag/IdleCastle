@@ -43,14 +43,11 @@ public class EnemyController : MonoBehaviour, IDamagable
     {
         if (other.gameObject.CompareTag("Castle"))
         {
-            CastleController finalZone = other.gameObject.GetComponent<CastleController>();
-
+            CastleController castle = other.gameObject.GetComponent<CastleController>();
             //Атака
-            if (finalZone.TryGetComponent(out IDamagable damagable))
-            {
-                damagable.ApplyDamage(enemyData.damage);
+            //damagable.ApplyDamage(enemyData.damage);
+            castle.ApplyDamage(enemyData.damage);
 
-            }
             isMoving = false;
             
         }
@@ -71,8 +68,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
     //Прибавление денег и уничтожение 
     void DeathProcess()
-    {
-        
+    {        
         enemyCanvas.transform.SetParent(null);
         enemyCanvas.gameObject.transform.position = transform.position;
         MoneyTextController mtc = enemyCanvas.GetComponentInChildren<MoneyTextController>();

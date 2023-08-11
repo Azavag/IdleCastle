@@ -12,47 +12,41 @@ public class CannonController : MonoBehaviour
     [SerializeField] float bulletSpeed;
     [SerializeField] float timeBetweenShots;
     [SerializeField] float bulletDamage;
+    [SerializeField] CannonScriptableObject[] cannons;
 
     Transform cannonBody;
     Transform firePoint;
-    GameObject cannonModel;
+    GameObject cannonModelObject;
 
     float ShootTimer;
     float minAngle = -45.0f;
     float maxAngle = 45.0f;
     float clampedAngleY;
     bool canShoot;
-    
+
+    [SerializeField] float bulletRateUpgradeStep;
+    [SerializeField] float bulletSpeedUpgradeStep;
+    [SerializeField] float bulletDamageUpgradeStep;
+    float upgradePercent;
+    int upgradeSteps;
+    int upgradesCounter;
+    int cannonNumber;
+    float upgradePrice;
 
 
     private void Start()
     {
-       
+        cannonNumber = 0;
+        upgradePercent = 10;
+        upgradeSteps = 10;
+        upgradesCounter = 0;
+        upgradePrice = 0;
+        CreateCannonObject(cannons[cannonNumber]);
+
         bulletsPool.CreateBulletsPool();
        
         canShoot = false;
         ResetTimer();
-    }
-
-    public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
-    {
-        Destroy(cannonModel);
-        cannonType = cannonScriptableObject;
-        cannonModel = Instantiate(cannonType.cannonModel, transform.position,
-           Quaternion.identity, transform);
-        cannonModel.name = "CannonBody_" + cannonType.cannonName;
-        cannonBody = cannonModel.transform;
-        firePoint = cannonModel.transform.Find("FirePoint");
-
-        SetCannonStats(cannonType);
-    }
-
-    void SetCannonStats(CannonScriptableObject cannonType)
-    {
-        bulletDamage = this.cannonType.bulletDamage;
-        timeBetweenShots = this.cannonType.timeBetweenShots;
-        bulletSpeed = this.cannonType.bulletSpeed;
-
     }
 
     private void Update()
@@ -67,18 +61,55 @@ public class CannonController : MonoBehaviour
             ResetTimer();
         }
     }
+    public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
+    {
+        Destroy(cannonModelObject);                         //Удаляем прошлую модель
+        upgradesCounter = 0;                                //Сбрасываем счётчик улучшений
+        // --------Создание новой пушки---------
+        cannonType = cannonScriptableObject;
+        cannonModelObject = Instantiate(cannonType.cannonModel, transform.position,
+           Quaternion.identity, transform);
+        cannonModelObject.name = "CannonBody_" + cannonType.cannonName;
+        cannonBody = cannonModelObject.transform;
+        firePoint = cannonModelObject.transform.Find("FirePoint");
+        // --------Получение характеристик новой пушки---------
+        SetCannonStats(cannonType);
+        SetUpgradesStep();
+    }
 
-    public void ChangeBulletsDamage(float diff)
+    void SetCannonStats(CannonScriptableObject cannonType)
     {
-        bulletDamage += diff;
+        bulletDamage = cannonType.bulletDamage;
+        timeBetweenShots = cannonType.timeBetweenShots;
+        bulletSpeed = cannonType.bulletSpeed;
+
+        upgradePrice = cannonType.price;
+
     }
-    public void ChangeBulletsRate(float diff)
+    //Улучшения харакетристик пушки
+    public void UpgradeStats()
     {
-        timeBetweenShots += diff;
+        bulletDamage += bulletDamageUpgradeStep;
+        timeBetweenShots -= bulletRateUpgradeStep;
+        bulletSpeed += bulletSpeedUpgradeStep;
+
+        upgradesCounter++;
+        if (upgradesCounter == upgradeSteps)
+            ChangeCannonType(++cannonNumber);
     }
-    public void ChangeBulletsSpeed(float diff)
+    //По кнопке улучшения и после 10 улучшений
+    public void ChangeCannonType(int number)
     {
-        bulletSpeed += diff;
+        CreateCannonObject(cannons[number]);
+    }
+    //Значение каждого шага для улучшения
+    public void SetUpgradesStep()
+    {
+        bulletDamageUpgradeStep = ((upgradePercent / 100) * cannonType.bulletDamage) / upgradeSteps;
+
+        bulletSpeedUpgradeStep = ((upgradePercent / 100) * cannonType.bulletSpeed) / upgradeSteps;
+
+        bulletRateUpgradeStep = ((upgradePercent / 100) * cannonType.timeBetweenShots) / upgradeSteps;
     }
     //Поворот пукшки на угол
     private void RotateCannon()
@@ -125,8 +156,9 @@ public class CannonController : MonoBehaviour
     {
         ShootTimer = timeBetweenShots;
     }
-
-   
-
-   
+ 
+    public float GetUpgradePrice()
+    {
+        return upgradePrice;
+    }
 }

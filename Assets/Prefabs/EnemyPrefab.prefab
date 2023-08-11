@@ -310,7 +310,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 54.3}
+  m_AnchoredPosition: {x: 0, y: 339}
   m_SizeDelta: {x: 538.42, y: 225.39}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6676535614738000402
@@ -483,7 +483,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &646296846145902861
 MonoBehaviour:
@@ -574,6 +574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabModel: {fileID: 5419428117253933927, guid: d4073e98fd814334f910d67eafbfabe4, type: 3}
+  boxCollider: {fileID: 0}
 --- !u!114 &-6549758852290854607
 MonoBehaviour:
   m_ObjectHideFlags: 0

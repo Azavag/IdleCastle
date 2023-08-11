@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannonName: Pushka1
   price: 100
-  cannonModel: {fileID: 6863390236720564116, guid: 8186b026272436a47b41030910a40b28, type: 3}
+  bulletSpeed: 0
+  timeBetweenShots: 0
+  bulletDamage: 0
+  cannonModel: {fileID: 3841055588160344215, guid: 8186b026272436a47b41030910a40b28, type: 3}

@@ -19,13 +19,8 @@ public class MoneyManager : MonoBehaviour
         MoneyMultiplier = 1;
         UpdateMoneyText();       
     }
-
-    void OnEnemyDied(float cost)
-    {
-        ChangeMoneyCount(cost);
-    }
-    
-    void ChangeMoneyCount(float diff)
+   
+    public void ChangeMoneyCount(float diff)
     {
         MoneyCount += diff;
         UpdateMoneyText();
@@ -39,5 +34,8 @@ public class MoneyManager : MonoBehaviour
     {
         MoneyMultiplier += diff;
     }
-
+    void OnEnemyDied(float cost)
+    {
+        ChangeMoneyCount(cost);
+    }
 }

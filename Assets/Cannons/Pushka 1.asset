@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pushka 1
   m_EditorClassIdentifier: 
   cannonName: Pushka1
-  price: 100
+  price: 1
   bulletSpeed: 0.8
   timeBetweenShots: 1
   bulletDamage: 10

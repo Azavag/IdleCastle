@@ -34,12 +34,12 @@ public class CastleController : MonoBehaviour, IDamagable
     public void ApplyDamage(float damageValue)
     {
         currentHealth -= damageValue;
-
+        UpdateHealthText();
         if (currentHealth <= 0)
         {
             Death();
         }
-        UpdateHealthText();
+        
     }
     void Death()
     {      

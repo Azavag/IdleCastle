@@ -17,4 +17,4 @@ MonoBehaviour:
   bulletSpeed: 0.2
   timeBetweenShots: 1
   bulletDamage: 100
-  cannonModel: {fileID: 7400656152072892769, guid: d06138512c2d92d4c9664bdc96443c2c, type: 3}
+  cannonModel: {fileID: 2917312566244345520, guid: d06138512c2d92d4c9664bdc96443c2c, type: 3}
