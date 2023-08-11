@@ -18,7 +18,7 @@ public class BulletController : MonoBehaviour
     void Update()
     {
         if(shootVector != null && bulletSpeed != 0)
-            transform.Translate(shootVector * bulletSpeed);
+            transform.Translate(shootVector * bulletSpeed * Time.deltaTime);
 
         if(!CheckLimitPosition())
             ResetBulletPostion();

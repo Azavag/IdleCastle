@@ -47,6 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8009786b16a26c42ba42445f6e4d9f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthText: {fileID: 0}
+  maxHealth: 50
+  gameManager: {fileID: 0}
 --- !u!33 &3656441525267190994
 MeshFilter:
   m_ObjectHideFlags: 0

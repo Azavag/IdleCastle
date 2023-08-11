@@ -16,6 +16,7 @@ public class EnemyData : MonoBehaviour
     public float currentHealth { get; set; }
     public float damage { get; set; }
     public float cost { get; set; }
+    public float timeAttack { get; set; }
 
     float costMultiplier;
 
@@ -32,6 +33,7 @@ public class EnemyData : MonoBehaviour
     {
         enemyType = type;
     }
+    //Цена устаналвивается при спавне
     public void SetCostMultiplier(float multiplier)
     {
         costMultiplier = multiplier;
@@ -49,6 +51,7 @@ public class EnemyData : MonoBehaviour
         damage = enemyType.damage;
         moveSpeed = enemyType.speed;
         cost = enemyType.moneyCost * costMultiplier;
+        timeAttack = enemyType.timeBetweenAtack;
         this.name = enemyType.enemyName;
     }
 

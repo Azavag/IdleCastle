@@ -1,9 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using Input = UnityEngine.Input;
+
 
 public class EnemyController : MonoBehaviour, IDamagable
 {
@@ -11,6 +9,9 @@ public class EnemyController : MonoBehaviour, IDamagable
     Rigidbody rb;
     Canvas enemyCanvas;
     bool isMoving;                          //Движение
+    bool isAttacking;                       //Атака
+    float attackTimer;
+    
 
     public float scale { set; get; }        //Размер коллайдера
 
@@ -23,7 +24,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         rb.WakeUp();
         scale = enemyData.colliderScale;
 
-
+        ResetAttackTimer();
         ChangeMoveState(true);
     }
 
@@ -35,8 +36,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     {       
         if (isMoving)
             transform.Translate(enemyData.moveSpeed * Time.deltaTime * Vector3.forward);
-
-
+       
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,15 +45,31 @@ public class EnemyController : MonoBehaviour, IDamagable
         {
             CastleController castle = other.gameObject.GetComponent<CastleController>();
             //Атака
-            //damagable.ApplyDamage(enemyData.damage);
-            castle.ApplyDamage(enemyData.damage);
+            
+            //castle.ApplyDamage(enemyData.damage);
 
             isMoving = false;
-            
+            isAttacking = true;
         }
 
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Castle"))
+        {
+            if (isAttacking)
+                attackTimer -= Time.deltaTime;
+            CastleController castle = other.gameObject.GetComponent<CastleController>();
+            //Атака
+            if (attackTimer <= 0)
+            {
+                castle.ApplyDamage(enemyData.damage);
+                ResetAttackTimer();
+            }        
+        }
+    }
+    //Получение урона
     public void ApplyDamage(float damageValue)
     {
         enemyData.currentHealth -= damageValue;
@@ -80,6 +96,10 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     }
 
+    void ResetAttackTimer()
+    {
+        attackTimer = enemyData.timeAttack;
+    }
    
 
     void Death() 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoneyManager : MonoBehaviour
 {    
-    public float MoneyCount { set; get; }
+    public float moneyCount;
     public float MoneyMultiplier { set; get; }
     [SerializeField] TextMeshProUGUI moneyCountText;
 
@@ -15,19 +15,27 @@ public class MoneyManager : MonoBehaviour
     }
     void Start()
     {
-        MoneyCount = 0;
+        moneyCount = 10000;
         MoneyMultiplier = 1;
         UpdateMoneyText();       
     }
    
-    public void ChangeMoneyCount(float diff)
+    public bool TryToSpend(float price)
     {
-        MoneyCount += diff;
+        if (moneyCount < price)
+            return false;
+
+        ChangeMoneyCount(-price); 
+        return true;
+    }
+    void ChangeMoneyCount(float diff)
+    {       
+        moneyCount += diff;
         UpdateMoneyText();
     }
     void UpdateMoneyText()
     {
-        moneyCountText.text = MoneyCount.ToString("#.##") + "$";
+        moneyCountText.text = moneyCount.ToString("#.##") + "$";
     }
 
     public void ChangeMoneyMultiplier(float diff)
@@ -37,5 +45,10 @@ public class MoneyManager : MonoBehaviour
     void OnEnemyDied(float cost)
     {
         ChangeMoneyCount(cost);
+    }
+
+    public float GetMoneyCount()
+    {
+        return moneyCount;
     }
 }

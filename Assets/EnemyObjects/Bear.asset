@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05a43cdeeaffc044d8e6c62161acfc74, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d89eb9e015019947ba13f4cf02798b2, type: 3}
   m_Name: Bear
   m_EditorClassIdentifier: 
   enemyName: Bear
-  speed: 30
-  health: 30
+  speed: 20
+  health: 1
   damage: 1
-  moneyCost: 5
+  moneyCost: 1
   timeBetweenAtack: 1
-  prefab: {fileID: 5302883033628102225, guid: e83100e6d3f119145857c2b8c7a17011, type: 3}
+  prefab: {fileID: -927199367670048503, guid: 8abe7fd5bca43df458f18caca9cd2173, type: 3}

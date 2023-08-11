@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb9ada976ba0dd54389332c242064e62, type: 3}
+  m_Script: {fileID: 11500000, guid: 09c59b949e9872b45862590a8a69113d, type: 3}
   m_Name: Pushka 7
   m_EditorClassIdentifier: 
-  cannonName: Pushka1
-  price: 100
-  bulletSpeed: 0
-  timeBetweenShots: 0
-  bulletDamage: 0
+  cannonName: Pushka7
+  bulletSpeed: 80
+  timeBetweenShots: 0.5
+  bulletDamage: 7
   cannonModel: {fileID: 6286116157320379713, guid: 4b064b89002af4248a3316f9f206d3e2, type: 3}

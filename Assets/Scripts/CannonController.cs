@@ -5,15 +5,22 @@ using UnityEngine;
 
 public class CannonController : MonoBehaviour
 {
-    public CannonScriptableObject cannonType;
+    
     [SerializeField] Camera mainCamera;
     [SerializeField] BulletsPool bulletsPool;
-
+    [Header("Харакетиристики пушки")]
     [SerializeField] float bulletSpeed;
     [SerializeField] float timeBetweenShots;
     [SerializeField] float bulletDamage;
     [SerializeField] CannonScriptableObject[] cannons;
+    [Header("Улучшение пушки")]
+    [SerializeField] int upgradeSteps = 10;
+    [SerializeField] float bulletSpeedUpgradeMin;
+    [SerializeField] float bulletSpeedUpgradeMax;
+    [SerializeField] float bulletDamageUpgradeMin;
+    [SerializeField] float bulletDamageUpgradeMax;
 
+    CannonScriptableObject cannonType;
     Transform cannonBody;
     Transform firePoint;
     GameObject cannonModelObject;
@@ -23,24 +30,24 @@ public class CannonController : MonoBehaviour
     float maxAngle = 45.0f;
     float clampedAngleY;
     bool canShoot;
+  
+    float bulletSpeedUpgradeStep;      
+    float bulletDamageUpgradeStep;
 
-    [SerializeField] float bulletRateUpgradeStep;
-    [SerializeField] float bulletSpeedUpgradeStep;
-    [SerializeField] float bulletDamageUpgradeStep;
-    float upgradePercent;
-    int upgradeSteps;
+
     int upgradesCounter;
     int cannonNumber;
-    float upgradePrice;
+    int cannonSwitchCount;
 
 
     private void Start()
     {
         cannonNumber = 0;
-        upgradePercent = 10;
-        upgradeSteps = 10;
         upgradesCounter = 0;
-        upgradePrice = 0;
+        timeBetweenShots = 0.5f;
+        cannonSwitchCount = cannons.Length - 1;
+        bulletSpeedUpgradeStep = 1f / (upgradeSteps * cannonSwitchCount) * (bulletSpeedUpgradeMax - bulletSpeedUpgradeMin);
+        bulletDamageUpgradeStep = 1f / (upgradeSteps * cannonSwitchCount) * (bulletDamageUpgradeMax - bulletDamageUpgradeMin);
         CreateCannonObject(cannons[cannonNumber]);
 
         bulletsPool.CreateBulletsPool();
@@ -74,7 +81,6 @@ public class CannonController : MonoBehaviour
         firePoint = cannonModelObject.transform.Find("FirePoint");
         // --------Получение характеристик новой пушки---------
         SetCannonStats(cannonType);
-        SetUpgradesStep();
     }
 
     void SetCannonStats(CannonScriptableObject cannonType)
@@ -82,35 +88,27 @@ public class CannonController : MonoBehaviour
         bulletDamage = cannonType.bulletDamage;
         timeBetweenShots = cannonType.timeBetweenShots;
         bulletSpeed = cannonType.bulletSpeed;
-
-        upgradePrice = cannonType.price;
-
     }
     //Улучшения харакетристик пушки
     public void UpgradeStats()
     {
         bulletDamage += bulletDamageUpgradeStep;
-        timeBetweenShots -= bulletRateUpgradeStep;
         bulletSpeed += bulletSpeedUpgradeStep;
-
+       
         upgradesCounter++;
-        if (upgradesCounter == upgradeSteps)
+
+        if (upgradesCounter == upgradeSteps)            //Сделать проверка на макс число
             ChangeCannonType(++cannonNumber);
+        
+
+
     }
     //По кнопке улучшения и после 10 улучшений
     public void ChangeCannonType(int number)
     {
         CreateCannonObject(cannons[number]);
     }
-    //Значение каждого шага для улучшения
-    public void SetUpgradesStep()
-    {
-        bulletDamageUpgradeStep = ((upgradePercent / 100) * cannonType.bulletDamage) / upgradeSteps;
 
-        bulletSpeedUpgradeStep = ((upgradePercent / 100) * cannonType.bulletSpeed) / upgradeSteps;
-
-        bulletRateUpgradeStep = ((upgradePercent / 100) * cannonType.timeBetweenShots) / upgradeSteps;
-    }
     //Поворот пукшки на угол
     private void RotateCannon()
     {
@@ -155,10 +153,5 @@ public class CannonController : MonoBehaviour
     void ResetTimer()
     {
         ShootTimer = timeBetweenShots;
-    }
- 
-    public float GetUpgradePrice()
-    {
-        return upgradePrice;
     }
 }
