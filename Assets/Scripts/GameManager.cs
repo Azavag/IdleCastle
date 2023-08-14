@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,12 +11,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] CastleController castleController;
     [SerializeField] Button startButton;
     [SerializeField] Canvas menuCanvas;
+    [SerializeField] TextMeshProUGUI passedWaveCountText;
 
-    bool isStart;
     // Start is called before the first frame update
     void Start()
     {
-       
+        UpdatePassedWaveCountText();
     }
 
     private void Update()
@@ -35,6 +36,18 @@ public class GameManager : MonoBehaviour
         menuCanvas.gameObject.SetActive(false);
     }
 
+    public void OnWinRound()
+    {
+        Debug.Log("Win");
+        UpdatePassedWaveCountText();
+        OnEndGame();
+    }
+    public void OnLoseRound()
+    {
+        Debug.Log("Loss");
+        OnEndGame();
+    }
+
     public void OnEndGame()
     {
         enemySpawner.SetSpawnState(false);
@@ -43,4 +56,8 @@ public class GameManager : MonoBehaviour
         menuCanvas.gameObject.SetActive(true);
     }
 
+    void UpdatePassedWaveCountText()
+    {
+        passedWaveCountText.text = "Пройдено волн: " + enemySpawner.GetPassedWavesCount().ToString();
+    }
 }

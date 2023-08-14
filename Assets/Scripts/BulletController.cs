@@ -6,6 +6,7 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     Vector3 shootVector;
+    [SerializeField] GameObject particlesPrefab;
     float bulletSpeed;
     float bulletDamage;
     float rangeLimitX = 200f, rangeLimitZ = 250f;
@@ -47,6 +48,12 @@ public class BulletController : MonoBehaviour
             if(enemy.TryGetComponent(out IDamagable damagable))
             {
                 damagable.ApplyDamage(bulletDamage);
+
+                GameObject partsClone = Instantiate(particlesPrefab,transform.position, 
+                    Quaternion.identity);
+                ParticleSystem parts = partsClone.GetComponent<ParticleSystem>();
+                float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
+                Destroy(partsClone, totalDuration);
                 
             }
             
@@ -57,11 +64,11 @@ public class BulletController : MonoBehaviour
     }
 
     void ResetBulletPostion()
-    {
+    {       
         gameObject.SetActive(false);
         SetShootSpeed(0);
         SetShootVector(new Vector3(0, 0, 0));
-        gameObject.transform.position = gameObject.transform.parent.position;
+        gameObject.transform.position = gameObject.transform.parent.position;       
     }
 
     bool CheckLimitPosition()

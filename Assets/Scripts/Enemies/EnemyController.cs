@@ -3,18 +3,17 @@ using TMPro;
 using UnityEngine;
 
 
-public class EnemyController : MonoBehaviour, IDamagable
+public class EnemyController: MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
     Rigidbody rb;
     Canvas enemyCanvas;
     bool isMoving;                          //Движение
     bool isAttacking;                       //Атака
-    float attackTimer;
-    
-
+    float attackTimer;   
     public float scale { set; get; }        //Размер коллайдера
 
+    [SerializeField] GameObject deathParticlesPrefab;
     
     void Start()
     {      
@@ -76,6 +75,10 @@ public class EnemyController : MonoBehaviour, IDamagable
 
         if (enemyData.currentHealth <= 0)
         {
+            GameObject partsClone = Instantiate(deathParticlesPrefab, transform.position, Quaternion.identity);
+            ParticleSystem parts = partsClone.GetComponent<ParticleSystem>();
+            float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
+            Destroy(partsClone, totalDuration);
             ChangeMoveState(false);
             DeathProcess();
             

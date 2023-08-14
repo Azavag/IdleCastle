@@ -19,6 +19,8 @@ public class EnemyData : MonoBehaviour
     public float timeAttack { get; set; }
 
     float costMultiplier;
+    float healthBonus;
+    float damageBonus;
 
 
     private void Start()
@@ -34,28 +36,35 @@ public class EnemyData : MonoBehaviour
         enemyType = type;
     }
     //Цена устаналвивается при спавне
-    public void SetCostMultiplier(float multiplier)
-    {
-        costMultiplier = multiplier;
-    }
-
-
+   
     void SetEnemyData()
     {
         prefabModel = enemyType.prefab;
         Instantiate(prefabModel, transform.position - new Vector3(0, colliderScale / 2f, 0),
             transform.rotation, transform);
 
-        maxHealth = enemyType.health;
+        maxHealth = enemyType.health + healthBonus;
         currentHealth = maxHealth;
-        damage = enemyType.damage;
+        damage = enemyType.damage + damageBonus;
         moveSpeed = enemyType.speed;
         cost = enemyType.moneyCost * costMultiplier;
         timeAttack = enemyType.timeBetweenAtack;
         this.name = enemyType.enemyName;
     }
+    public void SetCostMultiplier(float multiplier)
+    {
+        costMultiplier += multiplier;
+    }
+    public void SetMaxhealtBonus(float bonus)
+    {
+        healthBonus += bonus;
+    }
+    public void SetAttackBonus(float bonus)
+    {
+        damageBonus += bonus;
+    }
 
-   
+
 
 
 }

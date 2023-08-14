@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pushka 7
   m_EditorClassIdentifier: 
   cannonName: Pushka7
-  bulletSpeed: 80
+  bulletSpeed: 50
   timeBetweenShots: 0.5
   bulletDamage: 7
   cannonModel: {fileID: 6286116157320379713, guid: 4b064b89002af4248a3316f9f206d3e2, type: 3}

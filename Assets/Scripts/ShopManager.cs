@@ -8,7 +8,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] CannonController cannonController;
     [SerializeField] CastleController castleController;
     [SerializeField] float healthUpgrade;
-    [SerializeField] float moneyMultiplierUpgrade;
+    [SerializeField] float moneyMultiplierUpgradeStep;
     [SerializeField] MoneyManager moneyManager;
 
     [SerializeField] float castleUpdragePrice;
@@ -19,7 +19,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI cannonUpdragePriceText;
     [SerializeField] TextMeshProUGUI moneyIncomeUpdragePriceText;
 
-    [SerializeField] float upgradeCannonPricePercent = 20;
+    [SerializeField] float upgradePricePercent = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +32,7 @@ public class ShopManager : MonoBehaviour
         if (moneyManager.TryToSpend(cannonUpdragePrice))
         {
             cannonController.UpgradeStats();
-            cannonUpdragePrice *= 1 + upgradeCannonPricePercent / 100;
+            cannonUpdragePrice *= 1 + upgradePricePercent / 100;
             UpdatePriceTexts();
         }
         
@@ -43,7 +43,7 @@ public class ShopManager : MonoBehaviour
         if (moneyManager.TryToSpend(castleUpdragePrice))
         {
             castleController.ChangeMaxHealth(healthUpgrade);
-            castleUpdragePrice *= 1 + upgradeCannonPricePercent / 100;
+            castleUpdragePrice *= 1 + upgradePricePercent / 100;
             UpdatePriceTexts();
         }
     }
@@ -52,8 +52,8 @@ public class ShopManager : MonoBehaviour
     {
         if (moneyManager.TryToSpend(moneyIncomeUpdragePrice))
         {
-            moneyManager.ChangeMoneyMultiplier(moneyMultiplierUpgrade);
-            moneyIncomeUpdragePrice *= 1 + upgradeCannonPricePercent / 100;
+            moneyManager.ChangeMoneyMultiplier(moneyMultiplierUpgradeStep);
+            moneyIncomeUpdragePrice *= 1 + upgradePricePercent / 100;
             UpdatePriceTexts();
         }
         

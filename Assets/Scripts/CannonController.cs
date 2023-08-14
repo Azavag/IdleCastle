@@ -15,10 +15,8 @@ public class CannonController : MonoBehaviour
     [SerializeField] CannonScriptableObject[] cannons;
     [Header("Улучшение пушки")]
     [SerializeField] int upgradeSteps = 10;
-    [SerializeField] float bulletSpeedUpgradeMin;
-    [SerializeField] float bulletSpeedUpgradeMax;
-    [SerializeField] float bulletDamageUpgradeMin;
-    [SerializeField] float bulletDamageUpgradeMax;
+    [SerializeField] float bulletDamageUpgradeStep = 0.2f;
+
 
     CannonScriptableObject cannonType;
     Transform cannonBody;
@@ -30,14 +28,9 @@ public class CannonController : MonoBehaviour
     float maxAngle = 45.0f;
     float clampedAngleY;
     bool canShoot;
-  
-    float bulletSpeedUpgradeStep;      
-    float bulletDamageUpgradeStep;
-
 
     int upgradesCounter;
     int cannonNumber;
-    int cannonSwitchCount;
 
 
     private void Start()
@@ -45,9 +38,6 @@ public class CannonController : MonoBehaviour
         cannonNumber = 0;
         upgradesCounter = 0;
         timeBetweenShots = 0.5f;
-        cannonSwitchCount = cannons.Length - 1;
-        bulletSpeedUpgradeStep = 1f / (upgradeSteps * cannonSwitchCount) * (bulletSpeedUpgradeMax - bulletSpeedUpgradeMin);
-        bulletDamageUpgradeStep = 1f / (upgradeSteps * cannonSwitchCount) * (bulletDamageUpgradeMax - bulletDamageUpgradeMin);
         CreateCannonObject(cannons[cannonNumber]);
 
         bulletsPool.CreateBulletsPool();
@@ -71,7 +61,7 @@ public class CannonController : MonoBehaviour
     public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
     {
         Destroy(cannonModelObject);                         //Удаляем прошлую модель
-        upgradesCounter = 0;                                //Сбрасываем счётчик улучшений
+        upgradesCounter = 0;                               
         // --------Создание новой пушки---------
         cannonType = cannonScriptableObject;
         cannonModelObject = Instantiate(cannonType.cannonModel, transform.position,
@@ -93,15 +83,11 @@ public class CannonController : MonoBehaviour
     public void UpgradeStats()
     {
         bulletDamage += bulletDamageUpgradeStep;
-        bulletSpeed += bulletSpeedUpgradeStep;
        
         upgradesCounter++;
-
-        if (upgradesCounter == upgradeSteps)            //Сделать проверка на макс число
+        //Смена пушки после n апгрейдов
+        if (upgradesCounter == upgradeSteps)           
             ChangeCannonType(++cannonNumber);
-        
-
-
     }
     //По кнопке улучшения и после 10 улучшений
     public void ChangeCannonType(int number)

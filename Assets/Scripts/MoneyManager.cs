@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoneyManager : MonoBehaviour
 {    
-    public float moneyCount;
+    [SerializeField] float moneyCount;
     public float MoneyMultiplier { set; get; }
     [SerializeField] TextMeshProUGUI moneyCountText;
 
@@ -15,7 +15,6 @@ public class MoneyManager : MonoBehaviour
     }
     void Start()
     {
-        moneyCount = 10000;
         MoneyMultiplier = 1;
         UpdateMoneyText();       
     }

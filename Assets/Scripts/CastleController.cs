@@ -44,7 +44,7 @@ public class CastleController : MonoBehaviour, IDamagable
     void Death()
     {      
         gameObject.SetActive(false);
-        gameManager.OnEndGame();
+        gameManager.OnLoseRound();
     }
 
 
