@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 using UnityEngine;
 
 public class EnemyData : MonoBehaviour
 {
     EnemyScriptableObject enemyType;
-    [SerializeField] GameObject prefabModel;
-    [SerializeField] 
-
+    GameObject prefabModel;
 
     BoxCollider boxCollider;
+    Rigidbody rb;
     public float colliderScale { get; set; }
     public float moveSpeed { get; set; }
     public float maxHealth { get; set; }
@@ -25,8 +25,12 @@ public class EnemyData : MonoBehaviour
 
     private void Start()
     {
-        boxCollider = GetComponent<BoxCollider>();
-        colliderScale = boxCollider.size.y;
+        boxCollider = gameObject.GetComponent<BoxCollider>();
+        boxCollider.size = enemyType.collider.size;
+        boxCollider.center = enemyType.collider.center;
+        enemyType.collider.enabled = false;
+       // rb.isKinematic = true;
+        //colliderScale = boxCollider.size.y;
 
         SetEnemyData();
 
@@ -40,7 +44,7 @@ public class EnemyData : MonoBehaviour
     void SetEnemyData()
     {
         prefabModel = enemyType.prefab;
-        Instantiate(prefabModel, transform.position - new Vector3(0, colliderScale / 2f, 0),
+        Instantiate(prefabModel, new Vector3(transform.position.x, transform.position.y, transform.position.z),
             transform.rotation, transform);
 
         maxHealth = enemyType.health + healthBonus;
@@ -55,7 +59,7 @@ public class EnemyData : MonoBehaviour
     {
         costMultiplier += multiplier;
     }
-    public void SetMaxhealtBonus(float bonus)
+    public void SetMaxhealthBonus(float bonus)
     {
         healthBonus += bonus;
     }

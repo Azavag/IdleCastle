@@ -1,31 +1,43 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("Объекты на уровнне")]
     [SerializeField] int waveCount = 0;
-    [SerializeField] int roundEnemiesCount;
+    [SerializeField] int waveEnemiesCount;
 
     List<EnemyController> aliveEnemies;
     int killedEnemies;
-    float timeBetweenSpawn;
+    
+    [Header ("Правила спавна объектов")]
     [SerializeField] float minTimeBetweenSpawn;
     [SerializeField] float maXtimeBetweenSpawn;
     [SerializeField] GameObject firstBorderObject;
     [SerializeField] GameObject secondBorderObject;
-    float xPosition;
-    float zPosition; 
-
-    [SerializeField] EnemyController enemyObject;
+    float timeBetweenSpawn;
+    float xSpawnPosition;
+    float zSpawnPosition;
+    float ySpawnPosition = 2f;
+    [Header("Правила улучшения монстров")]
+    float maxHealthBonus = 0;
+    float damageBonus = 0;
+    int waveEnemiesCountUpgrade = 1;
+    [Header("Объекты")]
+    [SerializeField] EnemyController enemyPrefab;
+    [SerializeField] EnemyController bossEnemyPrefab;
     [SerializeField] EnemyScriptableObject[] enemyTypeArr;
+    [SerializeField] EnemyScriptableObject[] bossEnemyTypeArr;
+    [Header("Система")]
     [SerializeField] GameManager gameManager;
     [SerializeField] MoneyManager moneyManager;
+
     Coroutine spawnRoutine = null;
     bool spawnState;
-    float maxHealthBonus;
-    float damageBonus;
 
     private void Awake()
     {
@@ -35,63 +47,57 @@ public class EnemySpawner : MonoBehaviour
     {
         aliveEnemies = new List<EnemyController>();        
         killedEnemies = 0;
-        maxHealthBonus = 0;
-        damageBonus = 0;
+
         timeBetweenSpawn = Random.Range(minTimeBetweenSpawn, maXtimeBetweenSpawn);
     }
 
     public void StartSpawn()
     {
         killedEnemies = 0;
-       
+           
+        for (int count = 0; count < waveEnemiesCount; count++)
+        {
+            EnemyController enemyObject = Instantiate(enemyPrefab, 
+                GeneratePosition(firstBorderObject, secondBorderObject),
+                Quaternion.LookRotation(new Vector3(0, 0, -1)), 
+                transform);
+
+            //-------- Установка типа и доп. характеристик монстров -------//
+            SetBonuses(enemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus, damageBonus);
+
+
+            enemyObject.gameObject.SetActive(false);
+            aliveEnemies.Add(enemyObject);
+        }
+
+        if ((waveCount+1) % 10 == 0)
+        {
+            Vector3 bossPosition =  (firstBorderObject.transform.position + secondBorderObject.transform.position) / 2f;
+            EnemyController enemyObject = Instantiate(bossEnemyPrefab, 
+                new Vector3(bossPosition.x, 10f, bossPosition.z),
+                Quaternion.LookRotation(new Vector3(0, 0, -1)), 
+                transform);
+            //-------- Установка типа и доп. характеристик босса -------//
+            SetBonuses(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus * 3, damageBonus * 3);
+
+            enemyObject.gameObject.SetActive(false);
+            aliveEnemies.Add(enemyObject);
+        }
+
         if (spawnState)
         {
-
-            if (aliveEnemies.Count > 0)
-            {
-                foreach (var enemy in aliveEnemies)
-                {
-                    Destroy(enemy.gameObject);
-                }
-                aliveEnemies.Clear();
-            }
-
-            SpawnEnemies(roundEnemiesCount);
             spawnRoutine = StartCoroutine(ReleaseEnemies());
-
             SetSpawnState(false);
         }
     }
-    //Спавн всех объектов
-    void SpawnEnemies(int enemiesCount)
-    {       
-        for (int count = 0; count < enemiesCount; count++)
-        {
-            float yPos = 1.5f;
 
-            GeneratePos(firstBorderObject, secondBorderObject);
-
-            EnemyController enemy = Instantiate(enemyObject, new Vector3(xPosition, yPos, zPosition),
-                Quaternion.LookRotation(new Vector3(0, 0, -1)), this.transform);
-
-            enemy.GetComponent<EnemyData>().SetCostMultiplier(moneyManager.MoneyMultiplier);
-            enemy.GetComponent<EnemyData>().SetMaxhealtBonus(maxHealthBonus);
-            enemy.GetComponent<EnemyData>().SetAttackBonus(damageBonus);
-            enemy.GetComponent<EnemyData>().ChooseEnemyType(GenerateType());
-
-
-            enemy.gameObject.SetActive(false);
-            aliveEnemies.Add(enemy);
-        }      
-    }
-    //Включение объекта
+    //Включение объектов
     IEnumerator ReleaseEnemies()
     {
         for (int count = 0; count < aliveEnemies.Count; count++)
         {           
             aliveEnemies[count].gameObject.SetActive(true);
             yield return new WaitForSeconds(timeBetweenSpawn);
-
         }       
     }
 
@@ -99,14 +105,24 @@ public class EnemySpawner : MonoBehaviour
     {
         spawnState = state;
     }
-
-    EnemyScriptableObject GenerateType()
+    void SetBonuses(EnemyScriptableObject[] enemiesArr, EnemyController enemy, float moneyMultiplier, float hltBonus, float dmgBonus)
     {
-        int randomIndex = Random.Range(0, enemyTypeArr.Length);
-        return enemyTypeArr[randomIndex];
+        enemy.GetComponent<EnemyData>().SetCostMultiplier(moneyMultiplier);
+        enemy.GetComponent<EnemyData>().SetMaxhealthBonus(hltBonus);
+        enemy.GetComponent<EnemyData>().SetAttackBonus(dmgBonus);
+        
+        int randomIndex = Random.Range(0, enemiesArr.Length);
+        enemy.GetComponent<EnemyData>().ChooseEnemyType(enemiesArr[randomIndex]);
     }
 
-    void GeneratePos(GameObject firstBorderObject, GameObject secondBorderObject)
+    //Неактивный метод
+    EnemyScriptableObject GenerateType(EnemyScriptableObject[] array)
+    {
+        int randomIndex = Random.Range(0, array.Length);
+        return array[randomIndex];
+    }
+
+    Vector3 GeneratePosition(GameObject firstBorderObject, GameObject secondBorderObject)
     {
         float firstBorderXPostion = firstBorderObject.transform.position.x;
         float firstBorderZPostion = firstBorderObject.transform.position.z;
@@ -114,15 +130,17 @@ public class EnemySpawner : MonoBehaviour
         float secondBorderXPostion = secondBorderObject.transform.position.x;
         float secondBorderZPostion = secondBorderObject.transform.position.z;
 
-        xPosition = Random.Range(firstBorderXPostion, secondBorderXPostion);
-        zPosition = Random.Range(firstBorderZPostion, secondBorderZPostion);
+        xSpawnPosition = Random.Range(firstBorderXPostion, secondBorderXPostion);
+        zSpawnPosition = Random.Range(firstBorderZPostion, secondBorderZPostion);
+
+        return new Vector3(xSpawnPosition, ySpawnPosition, zSpawnPosition);
     }
     //При смерти противника
     void OnEnemyDied(float cost)
     {
         killedEnemies++;
 
-        if (killedEnemies == roundEnemiesCount)
+        if (killedEnemies == aliveEnemies.Count)
         {
             waveCount++;
             CheckWavesCountOnUpgrades();
@@ -130,22 +148,32 @@ public class EnemySpawner : MonoBehaviour
         }
         
     }
-
+    //Улучшение характеристик монстров В зависимости от волны
     void CheckWavesCountOnUpgrades()
     {
         if(waveCount % 5 == 0)
             maxHealthBonus++;
         if (waveCount % 10 == 0)
+        {
             damageBonus++;
+            waveEnemiesCount += waveEnemiesCountUpgrade;
+        }
     }
 
     public void StopAllEnemies()
     {
         SetSpawnState(false);
         StopCoroutine(spawnRoutine);
-        foreach (var enemy in aliveEnemies)
+
+        if (aliveEnemies.Count > 0)
         {
-            enemy.ChangeMoveState(false);            
+            int countAlives = aliveEnemies.Count;
+            for (int countEnemy = 0; countEnemy < countAlives; countEnemy++)
+            {
+                aliveEnemies[countEnemy].ChangeMoveState(false);
+                Destroy(aliveEnemies[countEnemy].gameObject);
+            }
+            aliveEnemies.Clear();
         }
     }
     public int GetPassedWavesCount()

@@ -6,7 +6,6 @@ using UnityEngine;
 public class EnemyController: MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
-    Rigidbody rb;
     Canvas enemyCanvas;
     bool isMoving;                          //Движение
     bool isAttacking;                       //Атака
@@ -18,9 +17,7 @@ public class EnemyController: MonoBehaviour, IDamagable
     void Start()
     {      
         enemyData = GetComponent<EnemyData>();
-        rb = GetComponent<Rigidbody>();
         enemyCanvas = GetComponentInChildren<Canvas>();
-        rb.WakeUp();
         scale = enemyData.colliderScale;
 
         ResetAttackTimer();
@@ -40,30 +37,26 @@ public class EnemyController: MonoBehaviour, IDamagable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Castle"))
+        if (other.gameObject.GetComponent<CastleController>())
         {
-            CastleController castle = other.gameObject.GetComponent<CastleController>();
-            //Атака
-            
-            //castle.ApplyDamage(enemyData.damage);
-
             isMoving = false;
             isAttacking = true;
+           
         }
 
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Castle"))
+        if (other.gameObject.GetComponent<CastleController>())
         {
             if (isAttacking)
                 attackTimer -= Time.deltaTime;
-            CastleController castle = other.gameObject.GetComponent<CastleController>();
+            
             //Атака
             if (attackTimer <= 0)
             {
-                castle.ApplyDamage(enemyData.damage);
+                other.gameObject.GetComponent<CastleController>().ApplyDamage(enemyData.damage);
                 ResetAttackTimer();
             }        
         }
@@ -75,10 +68,14 @@ public class EnemyController: MonoBehaviour, IDamagable
 
         if (enemyData.currentHealth <= 0)
         {
-            GameObject partsClone = Instantiate(deathParticlesPrefab, transform.position, Quaternion.identity);
-            ParticleSystem parts = partsClone.GetComponent<ParticleSystem>();
+            //GameObject partsClone = Instantiate(deathParticlesPrefab, transform.position, Quaternion.identity);
+
+            deathParticlesPrefab.transform.SetParent(null);           
+            ParticleSystem parts = deathParticlesPrefab.GetComponent<ParticleSystem>();
+            deathParticlesPrefab.SetActive(true);
             float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
-            Destroy(partsClone, totalDuration);
+
+
             ChangeMoveState(false);
             DeathProcess();
             

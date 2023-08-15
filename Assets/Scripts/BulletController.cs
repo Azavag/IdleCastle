@@ -22,7 +22,7 @@ public class BulletController : MonoBehaviour
             transform.Translate(shootVector * bulletSpeed * Time.deltaTime);
 
         if(!CheckLimitPosition())
-            ResetBulletPostion();
+            ResetPostion();
     }
 
     public void SetShootVector(Vector3 vec)
@@ -58,12 +58,12 @@ public class BulletController : MonoBehaviour
             }
             
             
-            ResetBulletPostion();
+            ResetPostion();
         }
 
     }
 
-    void ResetBulletPostion()
+    public void ResetPostion()
     {       
         gameObject.SetActive(false);
         SetShootSpeed(0);

@@ -8,6 +8,7 @@ public class CannonController : MonoBehaviour
     
     [SerializeField] Camera mainCamera;
     [SerializeField] BulletsPool bulletsPool;
+    List<BulletController> bullets = new List<BulletController>();
     [Header("Харакетиристики пушки")]
     [SerializeField] float bulletSpeed;
     [SerializeField] float timeBetweenShots;
@@ -95,7 +96,7 @@ public class CannonController : MonoBehaviour
         CreateCannonObject(cannons[number]);
     }
 
-    //Поворот пукшки на угол
+    //Поворот пушки на угол
     private void RotateCannon()
     {
         if (canShoot)
@@ -121,17 +122,23 @@ public class CannonController : MonoBehaviour
     public void ChangeShootState(bool state)
     {
         canShoot = state;
+        
+        if (canShoot)
+            bullets.Clear();
+        else
+            ResetAllBullets();
     }
-
+    //Выстрел
     void Shoot()
     {
         if (canShoot)
         {
             // Создаем пулю и задаем ей начальную позицию, направление и скорость
-            BulletController spawneBullet = bulletsPool.SpawnFromPool(firePoint.position);
-            spawneBullet.SetShootVector(firePoint.forward);
-            spawneBullet.SetShootSpeed(bulletSpeed);
-            spawneBullet.SetShootDamage(bulletDamage);
+            BulletController spawnedBullet = bulletsPool.SpawnFromPool(firePoint.position);
+            bullets.Add(spawnedBullet);
+            spawnedBullet.SetShootVector(firePoint.forward);
+            spawnedBullet.SetShootSpeed(bulletSpeed);
+            spawnedBullet.SetShootDamage(bulletDamage);
         }
         else return;
 
@@ -139,5 +146,14 @@ public class CannonController : MonoBehaviour
     void ResetTimer()
     {
         ShootTimer = timeBetweenShots;
+    }
+
+    void ResetAllBullets()
+    {
+        foreach (var bullet in bullets)
+        {
+            bullet.ResetPostion();
+        }
+        
     }
 }

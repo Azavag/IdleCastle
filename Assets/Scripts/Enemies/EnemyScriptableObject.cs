@@ -11,7 +11,7 @@ public class EnemyScriptableObject : ScriptableObject
     public float timeBetweenAtack;
 
     public GameObject prefab;
-
+    public BoxCollider collider;
 }
 
 
