@@ -9,7 +9,7 @@ public class CastleController : MonoBehaviour, IDamagable
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] float maxHealth;
     [SerializeField] GameManager gameManager;
-    float currentHealth;  
+    [SerializeField] float currentHealth;  
 
     private void Start()
     {
@@ -29,7 +29,7 @@ public class CastleController : MonoBehaviour, IDamagable
     //Через эвент
     void UpdateHealthText()
     {
-        healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
+        //healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
     }
     public void ApplyDamage(float damageValue)
     {

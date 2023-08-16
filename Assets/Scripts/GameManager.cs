@@ -6,17 +6,31 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header ("Система")]
     [SerializeField] EnemySpawner enemySpawner;
     [SerializeField] CannonController cannonController;
     [SerializeField] CastleController castleController;
+    [SerializeField] MoneyManager moneyManager;
+    [Header("UI элементы")]
     [SerializeField] Button startButton;
-    [SerializeField] Canvas menuCanvas;
-    [SerializeField] TextMeshProUGUI passedWaveCountText;
+    [SerializeField] Canvas mainCanvas;
+    [SerializeField] GameObject endWavePanel;
+    [SerializeField] GameObject upgradeButtons;
+    [Header("Text элементы")]
+    [SerializeField] TextMeshProUGUI resultText;
+    [SerializeField] GameObject waveCountObject;
+    TextMeshProUGUI waveCountText;
+    [SerializeField] GameObject moneyCountObject;
+    [SerializeField] TextMeshProUGUI waveEnemiesCountText;
 
-    // Start is called before the first frame update
+    int wavesCount;
+    string failureText = "Поражение";
+    string successText = "Победа";
+
     void Start()
     {
-        UpdatePassedWaveCountText();
+        StartLaunch();
+        
     }
 
     private void Update()
@@ -27,37 +41,91 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnStartGame()
+    //Пеереход на экран раунда
+    public void GoToGameCanvas()
+    {
+        endWavePanel.SetActive(false);
+        startButton.gameObject.SetActive(true);
+        upgradeButtons.SetActive(true);
+        waveCountObject.SetActive(true);
+
+        moneyManager.ChangeMoneyCount(moneyManager.GetWaveMoneyCount());
+        moneyManager.ResetWaveMoneyCount();
+        castleController.ResetHealth();
+    }
+    //Начало раунда
+    public void StartGame()
     {
         enemySpawner.SetSpawnState(true);
-        enemySpawner.StartSpawn();
-        castleController.ResetHealth();
+        enemySpawner.StartSpawn();      
         cannonController.ChangeShootState(true);
-        menuCanvas.gameObject.SetActive(false);
+       
+        startButton.gameObject.SetActive(false);
+        upgradeButtons.SetActive(false);
+        waveCountObject.SetActive(false);
+        moneyCountObject.SetActive(false);
     }
-
+    //При победе
     public void OnWinRound()
     {
-        Debug.Log("Win");
-        UpdatePassedWaveCountText();
-        OnEndGame();
+        resultText.text = successText;
+        UpdateWaveCountText();
+        StartCoroutine(OnEndGame());
     }
+    //При поражении
     public void OnLoseRound()
     {
-        Debug.Log("Loss");
-        OnEndGame();
+        resultText.text = failureText;
+        StartCoroutine(OnEndGame());
     }
-
-    public void OnEndGame()
-    {
-        enemySpawner.SetSpawnState(false);
-        enemySpawner.StopAllEnemies();
+    //Конец раунда
+    IEnumerator OnEndGame()
+    {      
+        enemySpawner.StopAllEnemies();       
         cannonController.ChangeShootState(false);
-        menuCanvas.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.6f);
+
+        
+        UpdateWaveEnemiesCountText();
+        endWavePanel.SetActive(true);
+        moneyManager.ChangeWaveMoneyCount(moneyManager.GetTempWaveMoneyCount());
+        moneyCountObject.SetActive(true);
+        cannonController.ResetCannonRotation();
+        enemySpawner.ClearAllEnemies();
+        
     }
 
-    void UpdatePassedWaveCountText()
+    public void DoubleWaveMoneyCount()
     {
-        passedWaveCountText.text = "Пройдено волн: " + enemySpawner.GetPassedWavesCount().ToString();
+        moneyManager.ChangeWaveMoneyCount(moneyManager.GetTempWaveMoneyCount());
     }
+    //Обновление текста по уровням
+    void UpdateWaveCountText()
+    {
+        wavesCount = enemySpawner.GetPassedWavesCount();
+        waveCountText.text = "Пройдено уровней: " + wavesCount.ToString();
+    }
+    //Обновление текста по убийства на уровне
+    void UpdateWaveEnemiesCountText()
+    {
+        waveEnemiesCountText.text = enemySpawner.GetKilledEnemiesCount().ToString();    
+    }
+    //На запуске игры
+    void StartLaunch()
+    {
+        mainCanvas.gameObject.SetActive(true);      
+        startButton.gameObject.SetActive(true);
+        upgradeButtons.SetActive(true);
+        endWavePanel.SetActive(false);
+
+        waveCountObject.SetActive(true);
+        moneyCountObject.SetActive(true);
+        waveCountText = waveCountObject.GetComponentInChildren<TextMeshProUGUI>();
+
+        resultText.text = "";
+        UpdateWaveCountText();
+        moneyManager.UpdateMoneyText();
+    }
+
+
 }

@@ -183,7 +183,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2.82}
+  m_AnchoredPosition: {x: 0, y: 6}
   m_SizeDelta: {x: 689, y: 353}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8433389588767495926
@@ -259,9 +259,9 @@ GameObject:
   m_Component:
   - component: {fileID: 467576423092975485}
   - component: {fileID: -5942488594993573572}
+  - component: {fileID: -7779915577525137395}
   - component: {fileID: 1894779572750185923}
   - component: {fileID: -7418755422574705405}
-  - component: {fileID: -7779915577525137395}
   m_Layer: 0
   m_Name: BossEnemyPrefab
   m_TagString: Enemy
@@ -279,7 +279,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3022783531403302910}
@@ -298,8 +298,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dce64c3275ed0e48b8163bcee2d4c80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabModel: {fileID: 4162695792829326466, guid: 3616c8d031e272f44a85d15bca9de275, type: 3}
-  boxCollider: {fileID: 1894779572750185923}
+--- !u!114 &-7779915577525137395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992634474796258619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6a29e0a7182bc94d857d3f108f88756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathParticlesPrefab: {fileID: 7514005064173068781}
 --- !u!65 &1894779572750185923
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -315,11 +326,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-7418755422574705405
 Rigidbody:
@@ -329,8 +340,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7992634474796258619}
   serializedVersion: 4
-  m_Mass: 10000
-  m_Drag: 10000
+  m_Mass: 1
+  m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -344,23 +355,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 1
-  m_Constraints: 6
-  m_CollisionDetection: 2
---- !u!114 &-7779915577525137395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7992634474796258619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6a29e0a7182bc94d857d3f108f88756, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deathParticlesPrefab: {fileID: 7514005064173068781}
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1660133947317475956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -371,15 +369,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4538201931522051466, guid: ba9ef9879dc4a5445850529812cb5d8c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -31.66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4538201931522051466, guid: ba9ef9879dc4a5445850529812cb5d8c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.09
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4538201931522051466, guid: ba9ef9879dc4a5445850529812cb5d8c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.99
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4538201931522051466, guid: ba9ef9879dc4a5445850529812cb5d8c, type: 3}
       propertyPath: m_LocalRotation.w

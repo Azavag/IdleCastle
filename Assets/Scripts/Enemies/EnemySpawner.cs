@@ -22,7 +22,7 @@ public class EnemySpawner : MonoBehaviour
     float timeBetweenSpawn;
     float xSpawnPosition;
     float zSpawnPosition;
-    float ySpawnPosition = 2f;
+    float ySpawnPosition = 0;
     [Header("Правила улучшения монстров")]
     float maxHealthBonus = 0;
     float damageBonus = 0;
@@ -54,7 +54,7 @@ public class EnemySpawner : MonoBehaviour
     public void StartSpawn()
     {
         killedEnemies = 0;
-           
+        //Спавн обычных мобов
         for (int count = 0; count < waveEnemiesCount; count++)
         {
             EnemyController enemyObject = Instantiate(enemyPrefab, 
@@ -65,16 +65,15 @@ public class EnemySpawner : MonoBehaviour
             //-------- Установка типа и доп. характеристик монстров -------//
             SetBonuses(enemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus, damageBonus);
 
-
             enemyObject.gameObject.SetActive(false);
             aliveEnemies.Add(enemyObject);
         }
-
+        //Спавн босса
         if ((waveCount+1) % 10 == 0)
         {
             Vector3 bossPosition =  (firstBorderObject.transform.position + secondBorderObject.transform.position) / 2f;
             EnemyController enemyObject = Instantiate(bossEnemyPrefab, 
-                new Vector3(bossPosition.x, 10f, bossPosition.z),
+                new Vector3(bossPosition.x, ySpawnPosition, bossPosition.z),
                 Quaternion.LookRotation(new Vector3(0, 0, -1)), 
                 transform);
             //-------- Установка типа и доп. характеристик босса -------//
@@ -105,6 +104,7 @@ public class EnemySpawner : MonoBehaviour
     {
         spawnState = state;
     }
+
     void SetBonuses(EnemyScriptableObject[] enemiesArr, EnemyController enemy, float moneyMultiplier, float hltBonus, float dmgBonus)
     {
         enemy.GetComponent<EnemyData>().SetCostMultiplier(moneyMultiplier);
@@ -164,13 +164,22 @@ public class EnemySpawner : MonoBehaviour
     {
         SetSpawnState(false);
         StopCoroutine(spawnRoutine);
+        if (aliveEnemies.Count > 0)
+        {
+            foreach (var enemy in aliveEnemies)
+            {
+                enemy.ChangeMoveState(false);
+            }
+        }
+    }
 
+    public void ClearAllEnemies()
+    {
         if (aliveEnemies.Count > 0)
         {
             int countAlives = aliveEnemies.Count;
             for (int countEnemy = 0; countEnemy < countAlives; countEnemy++)
-            {
-                aliveEnemies[countEnemy].ChangeMoveState(false);
+            {                
                 Destroy(aliveEnemies[countEnemy].gameObject);
             }
             aliveEnemies.Clear();
@@ -179,6 +188,10 @@ public class EnemySpawner : MonoBehaviour
     public int GetPassedWavesCount()
     {
         return waveCount;
+    }
+    public int GetKilledEnemiesCount()
+    {
+        return killedEnemies;
     }
     private void OnDestroy()
     {

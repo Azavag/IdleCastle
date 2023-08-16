@@ -9,6 +9,7 @@ public class ShopManager : MonoBehaviour
     [SerializeField] CastleController castleController;
     [SerializeField] float healthUpgrade;
     [SerializeField] float moneyMultiplierUpgradeStep;
+    float moneyMultiplier = 0;
     [SerializeField] MoneyManager moneyManager;
 
     [SerializeField] float castleUpdragePrice;
@@ -52,8 +53,9 @@ public class ShopManager : MonoBehaviour
     {
         if (moneyManager.TryToSpend(moneyIncomeUpdragePrice))
         {
-            moneyManager.ChangeMoneyMultiplier(moneyMultiplierUpgradeStep);
-            moneyIncomeUpdragePrice *= 1 + upgradePricePercent / 100;
+            moneyMultiplier += moneyMultiplierUpgradeStep/100f;
+            moneyManager.ChangeMoneyMultiplier(moneyMultiplier);
+            moneyIncomeUpdragePrice *= 1 + upgradePricePercent / 100f;
             UpdatePriceTexts();
         }
         

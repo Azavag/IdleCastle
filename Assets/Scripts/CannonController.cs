@@ -153,7 +153,10 @@ public class CannonController : MonoBehaviour
         foreach (var bullet in bullets)
         {
             bullet.ResetPostion();
-        }
-        
+        }     
+    }
+    public void ResetCannonRotation()
+    {
+        cannonBody.rotation = Quaternion.identity;
     }
 }

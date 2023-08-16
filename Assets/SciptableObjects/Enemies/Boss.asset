@@ -18,4 +18,5 @@ MonoBehaviour:
   damage: 3
   moneyCost: 10
   timeBetweenAtack: 1
-  prefab: {fileID: 4162695792829326466, guid: 3616c8d031e272f44a85d15bca9de275, type: 3}
+  prefab: {fileID: 1847829917400149697, guid: 519c5ff40792b5241991e0bc9dad24f0, type: 3}
+  collider: {fileID: 3696403897421347561, guid: 519c5ff40792b5241991e0bc9dad24f0, type: 3}
