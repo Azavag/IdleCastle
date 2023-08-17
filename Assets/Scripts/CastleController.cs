@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
 
 public class CastleController : MonoBehaviour, IDamagable
 {
@@ -9,49 +12,48 @@ public class CastleController : MonoBehaviour, IDamagable
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] float maxHealth;
     [SerializeField] GameManager gameManager;
-    [SerializeField] float currentHealth;  
-
+    [SerializeField] float currentHealth;
+    [SerializeField] Slider slider;
+    [SerializeField] Gradient gradient;
+    [SerializeField] UnityEngine.UI.Image fillImage;
     private void Start()
     {
         ResetHealth();
     }
-    void Update()
-    {
-       
-    }
+
 
     public void ResetHealth()
     {
         gameObject.SetActive(true);
         currentHealth = maxHealth;
-        UpdateHealthText();
+        slider.maxValue = maxHealth;
+        UpdateHealthSlider();
     }
-    //Через эвент
-    void UpdateHealthText()
-    {
-        //healthText.text = currentHealth.ToString() + " / " + maxHealth.ToString();
+    
+    void UpdateHealthSlider()
+    {        
+        slider.value = currentHealth;
+        fillImage.color = gradient.Evaluate(slider.normalizedValue);
     }
     public void ApplyDamage(float damageValue)
     {
         currentHealth -= damageValue;
-        UpdateHealthText();
+        UpdateHealthSlider();
         if (currentHealth <= 0)
         {
-            Death();
-        }
-        
+            gameObject.SetActive(false);
+            gameManager.OnLoseRound();
+        }       
     }
-    void Death()
-    {      
-        gameObject.SetActive(false);
-        gameManager.OnLoseRound();
-    }
-
 
     public void ChangeMaxHealth(float diff)
     {
         maxHealth += diff;
         ResetHealth();
+    }
+    public float GetHealth()
+    {
+        return currentHealth;
     }
   
 

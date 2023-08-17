@@ -33,14 +33,6 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnEndGame();
-        }
-    }
-
     //Пеереход на экран раунда
     public void GoToGameCanvas()
     {
@@ -70,16 +62,16 @@ public class GameManager : MonoBehaviour
     {
         resultText.text = successText;
         UpdateWaveCountText();
-        StartCoroutine(OnEndGame());
+        StartCoroutine(ShowFinalCanvas());
     }
-    //При поражении
     public void OnLoseRound()
     {
         resultText.text = failureText;
-        StartCoroutine(OnEndGame());
+        StartCoroutine(ShowFinalCanvas());
     }
+
     //Конец раунда
-    IEnumerator OnEndGame()
+    IEnumerator ShowFinalCanvas()
     {      
         enemySpawner.StopAllEnemies();       
         cannonController.ChangeShootState(false);

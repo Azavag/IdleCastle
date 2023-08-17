@@ -10,7 +10,7 @@ public class EnemyData : MonoBehaviour
 
     BoxCollider boxCollider;
     Rigidbody rb;
-    public float colliderScale { get; set; }
+    public Vector3 colliderScale;
     public float moveSpeed { get; set; }
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
@@ -25,12 +25,20 @@ public class EnemyData : MonoBehaviour
 
     private void Start()
     {
+        colliderScale = enemyType.prefab.transform.localScale;
         boxCollider = gameObject.GetComponent<BoxCollider>();
-        boxCollider.size = enemyType.collider.size;
-        boxCollider.center = enemyType.collider.center;
+
+        boxCollider.center = new Vector3(enemyType.collider.center.x * colliderScale.x, 
+            enemyType.collider.center.y * colliderScale.y, 
+            enemyType.collider.center.z * colliderScale.z);
+ 
+        boxCollider.size = new Vector3(enemyType.collider.size.x * colliderScale.x,
+            enemyType.collider.size.y * colliderScale.y,
+            enemyType.collider.size.z * colliderScale.z);
+
         enemyType.collider.enabled = false;
        // rb.isKinematic = true;
-        //colliderScale = boxCollider.size.y;
+        
 
         SetEnemyData();
 

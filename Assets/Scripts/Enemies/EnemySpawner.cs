@@ -11,8 +11,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] int waveCount = 0;
     [SerializeField] int waveEnemiesCount;
 
-    List<EnemyController> aliveEnemies;
+    List<EnemyController> enemiesList;
     int killedEnemies;
+    int diedEnemies;
     
     [Header ("Правила спавна объектов")]
     [SerializeField] float minTimeBetweenSpawn;
@@ -42,11 +43,13 @@ public class EnemySpawner : MonoBehaviour
     private void Awake()
     {
         EventManager.EnemyDied += OnEnemyDied;
+        EventManager.EnemyKilled += OnEnemyKilled;
     }
     void Start()
     {
-        aliveEnemies = new List<EnemyController>();        
+        enemiesList = new List<EnemyController>();        
         killedEnemies = 0;
+        diedEnemies = 0;
 
         timeBetweenSpawn = Random.Range(minTimeBetweenSpawn, maXtimeBetweenSpawn);
     }
@@ -54,6 +57,7 @@ public class EnemySpawner : MonoBehaviour
     public void StartSpawn()
     {
         killedEnemies = 0;
+        diedEnemies = 0;
         //Спавн обычных мобов
         for (int count = 0; count < waveEnemiesCount; count++)
         {
@@ -66,7 +70,7 @@ public class EnemySpawner : MonoBehaviour
             SetBonuses(enemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus, damageBonus);
 
             enemyObject.gameObject.SetActive(false);
-            aliveEnemies.Add(enemyObject);
+            enemiesList.Add(enemyObject);
         }
         //Спавн босса
         if ((waveCount+1) % 10 == 0)
@@ -80,7 +84,7 @@ public class EnemySpawner : MonoBehaviour
             SetBonuses(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus * 3, damageBonus * 3);
 
             enemyObject.gameObject.SetActive(false);
-            aliveEnemies.Add(enemyObject);
+            enemiesList.Add(enemyObject);
         }
 
         if (spawnState)
@@ -93,9 +97,9 @@ public class EnemySpawner : MonoBehaviour
     //Включение объектов
     IEnumerator ReleaseEnemies()
     {
-        for (int count = 0; count < aliveEnemies.Count; count++)
+        for (int count = 0; count < enemiesList.Count; count++)
         {           
-            aliveEnemies[count].gameObject.SetActive(true);
+            enemiesList[count].gameObject.SetActive(true);
             yield return new WaitForSeconds(timeBetweenSpawn);
         }       
     }
@@ -136,17 +140,26 @@ public class EnemySpawner : MonoBehaviour
         return new Vector3(xSpawnPosition, ySpawnPosition, zSpawnPosition);
     }
     //При смерти противника
-    void OnEnemyDied(float cost)
+    void OnEnemyDied()
+    {
+         diedEnemies++;
+
+        if ((diedEnemies + killedEnemies) == enemiesList.Count)
+        {                    
+            gameManager.OnWinRound();
+        }       
+    }
+    //Когда пушка убивает
+    void OnEnemyKilled(float cost)
     {
         killedEnemies++;
 
-        if (killedEnemies == aliveEnemies.Count)
+        if ((diedEnemies + killedEnemies) == enemiesList.Count)
         {
             waveCount++;
             CheckWavesCountOnUpgrades();
             gameManager.OnWinRound();
         }
-        
     }
     //Улучшение характеристик монстров В зависимости от волны
     void CheckWavesCountOnUpgrades()
@@ -164,9 +177,9 @@ public class EnemySpawner : MonoBehaviour
     {
         SetSpawnState(false);
         StopCoroutine(spawnRoutine);
-        if (aliveEnemies.Count > 0)
+        if (enemiesList.Count > 0)
         {
-            foreach (var enemy in aliveEnemies)
+            foreach (var enemy in enemiesList)
             {
                 enemy.ChangeMoveState(false);
             }
@@ -175,14 +188,14 @@ public class EnemySpawner : MonoBehaviour
 
     public void ClearAllEnemies()
     {
-        if (aliveEnemies.Count > 0)
+        if (enemiesList.Count > 0)
         {
-            int countAlives = aliveEnemies.Count;
+            int countAlives = enemiesList.Count;
             for (int countEnemy = 0; countEnemy < countAlives; countEnemy++)
             {                
-                Destroy(aliveEnemies[countEnemy].gameObject);
+                Destroy(enemiesList[countEnemy].gameObject);
             }
-            aliveEnemies.Clear();
+            enemiesList.Clear();
         }
     }
     public int GetPassedWavesCount()
@@ -196,6 +209,7 @@ public class EnemySpawner : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.EnemyDied -= OnEnemyDied;
+        EventManager.EnemyKilled -= OnEnemyKilled;
     }
 
 }

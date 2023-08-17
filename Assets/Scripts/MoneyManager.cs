@@ -20,7 +20,7 @@ public class MoneyManager : MonoBehaviour
 
     private void Awake()
     {
-        EventManager.EnemyDied += OnEnemyDied;
+        EventManager.EnemyKilled += OnEnemyKilled;
     }
     void Start()
     {
@@ -58,9 +58,8 @@ public class MoneyManager : MonoBehaviour
         MoneyMultiplier = 1 + diff;
     }
       
-    void OnEnemyDied(float cost)
+    void OnEnemyKilled(float cost)
     {
-        //ChangeWaveMoneyCount(cost);
         tempWaveMoneyCount += cost;
     }
 

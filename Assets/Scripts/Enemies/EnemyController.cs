@@ -7,10 +7,10 @@ public class EnemyController: MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
     Canvas enemyCanvas;
+    FlyTextController animatedText;
     bool isMoving;                          //Движение
     bool isAttacking;                       //Атака
     float attackTimer;   
-    public float scale { set; get; }        //Размер коллайдера
 
     [SerializeField] GameObject deathParticlesPrefab;
     
@@ -18,8 +18,8 @@ public class EnemyController: MonoBehaviour, IDamagable
     {      
         enemyData = GetComponent<EnemyData>();
         enemyCanvas = GetComponentInChildren<Canvas>();
-        scale = enemyData.colliderScale;
-
+        
+        animatedText = enemyCanvas.GetComponentInChildren<FlyTextController>();
         ResetAttackTimer();
         ChangeMoveState(true);
     }
@@ -31,82 +31,65 @@ public class EnemyController: MonoBehaviour, IDamagable
     private void Update()
     {       
         if (isMoving)
-            transform.Translate(enemyData.moveSpeed * Time.deltaTime * Vector3.forward);
-       
+            transform.Translate(enemyData.moveSpeed * Time.deltaTime * Vector3.forward);       
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<CastleController>())
         {
-            isMoving = false;
-            isAttacking = true;
-           
-        }
-
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.GetComponent<CastleController>())
-        {
-            if (isAttacking)
-                attackTimer -= Time.deltaTime;
-            
-            //Атака
-            if (attackTimer <= 0)
-            {
-                other.gameObject.GetComponent<CastleController>().ApplyDamage(enemyData.damage);
-                ResetAttackTimer();
-            }        
+            isMoving = false;           
+            other.gameObject.GetComponent<CastleController>().ApplyDamage(enemyData.damage);
+            EventManager.OnEnemDied();
+            DeathAnimation();
         }
     }
+
     //Получение урона
     public void ApplyDamage(float damageValue)
     {
-        enemyData.currentHealth -= damageValue;
-
+        enemyData.currentHealth -= damageValue;   
+        animatedText.StartAnimate(damageValue);
         if (enemyData.currentHealth <= 0)
         {
-            //GameObject partsClone = Instantiate(deathParticlesPrefab, transform.position, Quaternion.identity);
-
-            deathParticlesPrefab.transform.SetParent(null);           
-            ParticleSystem parts = deathParticlesPrefab.GetComponent<ParticleSystem>();
-            deathParticlesPrefab.SetActive(true);
-            float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
-
-
+            Vector3 destroyPos = transform.position;
+            enemyCanvas.transform.SetParent(null, true);
+            enemyCanvas.transform.position = 
+                new Vector3(destroyPos.x, 
+                enemyCanvas.transform.position.y, 
+                enemyCanvas.transform.position.z);
+                    
             ChangeMoveState(false);
-            DeathProcess();
             
+            //EventManager.OnEnemDied();
+            EventManager.OnEnemKilled(enemyData.cost);
+            animatedText.StartLastAnimation();
+            DeathAnimation();
         }
         
     }
     //Прибавление денег и уничтожение 
-    void DeathProcess()
-    {        
-        enemyCanvas.transform.SetParent(null);
-        enemyCanvas.gameObject.transform.position = transform.position;
-        MoneyTextController mtc = enemyCanvas.GetComponentInChildren<MoneyTextController>();
-        mtc.StartAnimate(enemyData.cost);
+    void DeathAnimation()
+    {
+        //Партикл взрыва при смерти
+        deathParticlesPrefab.transform.SetParent(null);
+        ParticleSystem parts = deathParticlesPrefab.GetComponent<ParticleSystem>();
+        deathParticlesPrefab.SetActive(true);
+        float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
 
-
-
-        Death();
-
+        gameObject.SetActive(false);
+        //Death();
     }
 
     void ResetAttackTimer()
     {
         attackTimer = enemyData.timeAttack;
     }
-   
-
     void Death() 
     {
+        EventManager.OnEnemDied();
+        EventManager.OnEnemKilled(enemyData.cost);        
         
-        EventManager.OnEnemyDied(enemyData.cost);        
-        gameObject.SetActive(false);
     }
     
 }

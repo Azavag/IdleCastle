@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
-    public static event Action<float> EnemyDied; 
+    public static event Action<float> EnemyKilled;
+    public static event Action EnemyDied;
 
-    public static void OnEnemyDied(float cost)
+    public static void OnEnemKilled(float cost)
     {
-        EnemyDied?.Invoke(cost);
+        EnemyKilled?.Invoke(cost);
     }
-
+    public static void OnEnemDied()
+    {
+        EnemyDied?.Invoke();
+    }
 }
 
