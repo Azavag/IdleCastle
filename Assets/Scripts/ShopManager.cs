@@ -5,24 +5,26 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
+    [Header("Система")]
     [SerializeField] CannonController cannonController;
-    [SerializeField] CastleController castleController;
-    [SerializeField] float healthUpgrade;
-    [SerializeField] float moneyMultiplierUpgradeStep;
-    float moneyMultiplier = 0;
+    [SerializeField] CastleController castleController;       
     [SerializeField] MoneyManager moneyManager;
+    [Header("Цены улучшений")]
+    [SerializeField] float cannonPriceStep;
+    [SerializeField] float castlePriceStep;
+    [SerializeField] float incomePriceStep;
 
-    [SerializeField] float castleUpdragePrice;
-    [SerializeField] float cannonUpdragePrice;
-    [SerializeField] float moneyIncomeUpdragePrice;
-
+    [SerializeField] float multiplierUpgradePercent;
+    float moneyMultiplier = 1;
+    [SerializeField] float castleUpgradePrice;
+    [SerializeField] float cannonUpradePrice;
+    [SerializeField] float moneyIncomeUpgradePrice;
+    [Header("Текст цены улучшений")]
     [SerializeField] TextMeshProUGUI castleUpdragePriceText;
     [SerializeField] TextMeshProUGUI cannonUpdragePriceText;
     [SerializeField] TextMeshProUGUI moneyIncomeUpdragePriceText;
 
-    [SerializeField] float upgradePricePercent = 20;
 
-    // Start is called before the first frame update
     void Start()
     {
         UpdatePriceTexts();
@@ -30,42 +32,40 @@ public class ShopManager : MonoBehaviour
     //По кнопке
     public void UpgradeCannon()
     {     
-        if (moneyManager.TryToSpend(cannonUpdragePrice))
+        if (moneyManager.TryToSpend(cannonUpradePrice))
         {
             cannonController.UpgradeStats();
-            cannonUpdragePrice *= 1 + upgradePricePercent / 100;
+            cannonUpradePrice += cannonPriceStep;
             UpdatePriceTexts();
-        }
-        
+        }   
     }
 
     public void UpgradeCastle()
     {
-        if (moneyManager.TryToSpend(castleUpdragePrice))
+        if (moneyManager.TryToSpend(castleUpgradePrice))
         {
-            castleController.ChangeMaxHealth(healthUpgrade);
-            castleUpdragePrice *= 1 + upgradePricePercent / 100;
+            castleController.ChangeMaxHealth();
+            castleUpgradePrice += cannonPriceStep;
             UpdatePriceTexts();
         }
     }
 
     public void UpgradeMoneyIncome()
     {
-        if (moneyManager.TryToSpend(moneyIncomeUpdragePrice))
+        if (moneyManager.TryToSpend(moneyIncomeUpgradePrice))
         {
-            moneyMultiplier += moneyMultiplierUpgradeStep/100f;
-            moneyManager.ChangeMoneyMultiplier(moneyMultiplier);
-            moneyIncomeUpdragePrice *= 1 + upgradePricePercent / 100f;
+            moneyMultiplier += multiplierUpgradePercent/100f;
+            moneyManager.SetMoneyMultiplier(moneyMultiplier);
+            moneyIncomeUpgradePrice += incomePriceStep;
             UpdatePriceTexts();
         }
         
     }
-
     void UpdatePriceTexts()
     {
-        castleUpdragePriceText.text = castleUpdragePrice.ToString("#.##") + "$";
-        cannonUpdragePriceText.text = cannonUpdragePrice.ToString("#.##") + "$";
-        moneyIncomeUpdragePriceText.text = moneyIncomeUpdragePrice.ToString("#.##") + "$";
+        castleUpdragePriceText.text = castleUpgradePrice.ToString("#.##") + "$";
+        cannonUpdragePriceText.text = cannonUpradePrice.ToString("#.##") + "$";
+        moneyIncomeUpdragePriceText.text = moneyIncomeUpgradePrice.ToString("#.##") + "$";
     }
 
 }

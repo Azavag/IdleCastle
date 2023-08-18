@@ -15,5 +15,5 @@ MonoBehaviour:
   cannonName: Pushka4
   bulletSpeed: 50
   timeBetweenShots: 0.5
-  bulletDamage: 4
+  bulletDamage: 1
   cannonModel: {fileID: 2917312566244345520, guid: d06138512c2d92d4c9664bdc96443c2c, type: 3}

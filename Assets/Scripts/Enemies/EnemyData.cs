@@ -9,18 +9,14 @@ public class EnemyData : MonoBehaviour
     GameObject prefabModel;
 
     BoxCollider boxCollider;
-    Rigidbody rb;
+
     public Vector3 colliderScale;
     public float moveSpeed { get; set; }
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
     public float damage { get; set; }
-    public float cost { get; set; }
+    public float cost = 1;
     public float timeAttack { get; set; }
-
-    float costMultiplier;
-    float healthBonus;
-    float damageBonus;
 
 
     private void Start()
@@ -36,12 +32,9 @@ public class EnemyData : MonoBehaviour
             enemyType.collider.size.y * colliderScale.y,
             enemyType.collider.size.z * colliderScale.z);
 
-        enemyType.collider.enabled = false;
-       // rb.isKinematic = true;
-        
+        enemyType.collider.enabled = false;        
 
         SetEnemyData();
-
     }
     public void ChooseEnemyType(EnemyScriptableObject type)
     {
@@ -55,25 +48,25 @@ public class EnemyData : MonoBehaviour
         Instantiate(prefabModel, new Vector3(transform.position.x, transform.position.y, transform.position.z),
             transform.rotation, transform);
 
-        maxHealth = enemyType.health + healthBonus;
-        currentHealth = maxHealth;
-        damage = enemyType.damage + damageBonus;
-        moveSpeed = enemyType.speed;
-        cost = enemyType.moneyCost * costMultiplier;
-        timeAttack = enemyType.timeBetweenAtack;
         this.name = enemyType.enemyName;
     }
-    public void SetCostMultiplier(float multiplier)
+    public void SetMultiplier(float multipleir)
     {
-        costMultiplier += multiplier;
+        cost *= multipleir;
     }
-    public void SetMaxhealthBonus(float bonus)
+    public void SetStats(float health)
     {
-        healthBonus += bonus;
+        maxHealth = health;
+        currentHealth = maxHealth;
+        damage = maxHealth;
     }
-    public void SetAttackBonus(float bonus)
+    public void SetAttackDmg(float dmg)
     {
-        damageBonus += bonus;
+        damage = dmg;
+    }
+    public void SetSpeed(float speed)
+    {
+        moveSpeed = speed;
     }
 
 

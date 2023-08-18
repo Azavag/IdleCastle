@@ -10,14 +10,13 @@ public class CannonController : MonoBehaviour
     [SerializeField] BulletsPool bulletsPool;
     List<BulletController> bullets = new List<BulletController>();
     [Header("Харакетиристики пушки")]
-    [SerializeField] float bulletSpeed;
-    [SerializeField] float timeBetweenShots;
-    [SerializeField] float bulletDamage;
+    [SerializeField] float bulletSpeed = 50f;
+    [SerializeField] float timeBetweenShots = 0.5f;
+    [SerializeField] float bulletDamage = 1;
     [SerializeField] CannonScriptableObject[] cannons;
     [Header("Улучшение пушки")]
     [SerializeField] int upgradeSteps = 10;
-    [SerializeField] float bulletDamageUpgradeStep = 0.2f;
-
+    [SerializeField] float bulletDamageUpgradeStep = 0.1f;
 
     CannonScriptableObject cannonType;
     Transform cannonBody;
@@ -30,15 +29,12 @@ public class CannonController : MonoBehaviour
     float clampedAngleY;
     bool canShoot;
 
-    int upgradesCounter;
-    int cannonNumber;
+    int upgradesCounter = 0;
+    int cannonNumber = 0;
 
 
     private void Start()
     {
-        cannonNumber = 0;
-        upgradesCounter = 0;
-        timeBetweenShots = 0.5f;
         CreateCannonObject(cannons[cannonNumber]);
 
         bulletsPool.CreateBulletsPool();
@@ -61,7 +57,7 @@ public class CannonController : MonoBehaviour
     }
     public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
     {
-        Destroy(cannonModelObject);                         //Удаляем прошлую модель
+        Destroy(cannonModelObject);                         
         upgradesCounter = 0;                               
         // --------Создание новой пушки---------
         cannonType = cannonScriptableObject;
@@ -70,21 +66,12 @@ public class CannonController : MonoBehaviour
         cannonModelObject.name = "CannonBody_" + cannonType.cannonName;
         cannonBody = cannonModelObject.transform;
         firePoint = cannonModelObject.transform.Find("FirePoint");
-        // --------Получение характеристик новой пушки---------
-        SetCannonStats(cannonType);
     }
 
-    void SetCannonStats(CannonScriptableObject cannonType)
-    {
-        bulletDamage = cannonType.bulletDamage;
-        timeBetweenShots = cannonType.timeBetweenShots;
-        bulletSpeed = cannonType.bulletSpeed;
-    }
     //Улучшения харакетристик пушки
     public void UpgradeStats()
     {
-        bulletDamage += bulletDamageUpgradeStep;
-       
+        bulletDamage += bulletDamageUpgradeStep;       
         upgradesCounter++;
         //Смена пушки после n апгрейдов
         if (upgradesCounter == upgradeSteps)           
@@ -125,8 +112,6 @@ public class CannonController : MonoBehaviour
         
         if (canShoot)
             bullets.Clear();
-        else
-            ResetAllBullets();
     }
     //Выстрел
     void Shoot()
@@ -148,7 +133,7 @@ public class CannonController : MonoBehaviour
         ShootTimer = timeBetweenShots;
     }
 
-    void ResetAllBullets()
+    public void ResetAllBullets()
     {
         foreach (var bullet in bullets)
         {

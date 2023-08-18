@@ -10,7 +10,7 @@ public class EnemyController: MonoBehaviour, IDamagable
     FlyTextController animatedText;
     bool isMoving;                          //Движение
     bool isAttacking;                       //Атака
-    float attackTimer;   
+    [SerializeField] float moveSpeed;
 
     [SerializeField] GameObject deathParticlesPrefab;
     
@@ -20,7 +20,6 @@ public class EnemyController: MonoBehaviour, IDamagable
         enemyCanvas = GetComponentInChildren<Canvas>();
         
         animatedText = enemyCanvas.GetComponentInChildren<FlyTextController>();
-        ResetAttackTimer();
         ChangeMoveState(true);
     }
 
@@ -78,18 +77,8 @@ public class EnemyController: MonoBehaviour, IDamagable
         float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
 
         gameObject.SetActive(false);
-        //Death();
     }
 
-    void ResetAttackTimer()
-    {
-        attackTimer = enemyData.timeAttack;
-    }
-    void Death() 
-    {
-        EventManager.OnEnemDied();
-        EventManager.OnEnemKilled(enemyData.cost);        
-        
-    }
+
     
 }

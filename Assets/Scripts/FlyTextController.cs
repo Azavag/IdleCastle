@@ -6,8 +6,8 @@ using UnityEngine.UIElements;
 
 public class FlyTextController : MonoBehaviour
 {
-    TextMeshProUGUI moneyText;
-    float _text;
+    TextMeshProUGUI damageText;
+    float _damage;
     float tPosition;
     float animationTime = 0.45f;
     bool isAnimate;
@@ -17,7 +17,7 @@ public class FlyTextController : MonoBehaviour
 
     void Start()
     {
-        moneyText = GetComponent<TextMeshProUGUI>();
+        damageText = GetComponent<TextMeshProUGUI>();
         parentCanvas = transform.parent.gameObject;
         tPosition = 0;
     }
@@ -26,10 +26,12 @@ public class FlyTextController : MonoBehaviour
     void Update()
     {
         if (isAnimate)
-        {
-            moneyText.text = _text.ToString();
+        {          
+            if(_damage % 1 == 0)
+                damageText.text = _damage.ToString("f0");
+            else damageText.text = _damage.ToString("f1");
 
-            tPosition += Time.deltaTime / animationTime;    //Чем меньше цифра, тем меньше время анимации
+            tPosition += Time.deltaTime / animationTime;
             Vector3 targetPosition = transform.position + new Vector3(0f, 0.2f, 0f);
             transform.position = Vector3.Lerp(transform.position, targetPosition, tPosition);
 
@@ -51,8 +53,8 @@ public class FlyTextController : MonoBehaviour
     {
         gameObject.SetActive(true);
         startYPosition = transform.position.y;
-        _text = textValue;
-        moneyText.enabled = true;
+        _damage = textValue;
+        damageText.enabled = true;
         isAnimate = true;      
     }
 

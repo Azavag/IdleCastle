@@ -4,11 +4,11 @@ using UnityEngine;
 public class EnemyScriptableObject : ScriptableObject
 {
     public string enemyName;   
-    public float speed;
-    public float health;
-    public float damage;
-    public float moneyCost;
-    public float timeBetweenAtack;
+    float speed;
+    float health;
+    float damage;
+    float moneyCost;
+    float timeBetweenAtack;
 
     public GameObject prefab;
     public BoxCollider collider;

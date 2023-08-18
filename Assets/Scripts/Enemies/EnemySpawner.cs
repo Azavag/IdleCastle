@@ -8,8 +8,11 @@ using Random = UnityEngine.Random;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Объекты на уровнне")]
-    [SerializeField] int waveCount = 0;
+    [SerializeField] int waveCount;
+    [SerializeField] int startEnemiesCount;
     [SerializeField] int waveEnemiesCount;
+    [SerializeField] bool isBoosWave;
+    [SerializeField] int waveBossCount;
 
     List<EnemyController> enemiesList;
     int killedEnemies;
@@ -20,14 +23,20 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] float maXtimeBetweenSpawn;
     [SerializeField] GameObject firstBorderObject;
     [SerializeField] GameObject secondBorderObject;
+    [SerializeField] int waveToUpgradeStats;
+    [SerializeField] int waveToUpgradeCount;
+    [SerializeField] int waveToBoss;
     float timeBetweenSpawn;
+    [SerializeField] float timeBetweenSpawnBoss;
     float xSpawnPosition;
     float zSpawnPosition;
     float ySpawnPosition = 0;
     [Header("Правила улучшения монстров")]
-    float maxHealthBonus = 0;
-    float damageBonus = 0;
-    int waveEnemiesCountUpgrade = 1;
+    [SerializeField] float currentStats;
+    float damage;
+    [SerializeField] float speed;
+    [SerializeField] float startStats = 1;
+    [SerializeField] float statsUpgrade;
     [Header("Объекты")]
     [SerializeField] EnemyController enemyPrefab;
     [SerializeField] EnemyController bossEnemyPrefab;
@@ -36,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("Система")]
     [SerializeField] GameManager gameManager;
     [SerializeField] MoneyManager moneyManager;
-
+    [SerializeField] CastleController castleController;
     Coroutine spawnRoutine = null;
     bool spawnState;
 
@@ -58,6 +67,8 @@ public class EnemySpawner : MonoBehaviour
     {
         killedEnemies = 0;
         diedEnemies = 0;
+        CheckWavesCountOnUpgrades();
+
         //Спавн обычных мобов
         for (int count = 0; count < waveEnemiesCount; count++)
         {
@@ -67,24 +78,26 @@ public class EnemySpawner : MonoBehaviour
                 transform);
 
             //-------- Установка типа и доп. характеристик монстров -------//
-            SetBonuses(enemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus, damageBonus);
+            SetStats(enemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, currentStats, speed);
 
             enemyObject.gameObject.SetActive(false);
             enemiesList.Add(enemyObject);
         }
         //Спавн босса
-        if ((waveCount+1) % 10 == 0)
+        if (isBoosWave)
         {
-            Vector3 bossPosition =  (firstBorderObject.transform.position + secondBorderObject.transform.position) / 2f;
-            EnemyController enemyObject = Instantiate(bossEnemyPrefab, 
-                new Vector3(bossPosition.x, ySpawnPosition, bossPosition.z),
-                Quaternion.LookRotation(new Vector3(0, 0, -1)), 
-                transform);
-            //-------- Установка типа и доп. характеристик босса -------//
-            SetBonuses(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier, maxHealthBonus * 3, damageBonus * 3);
+            for (int count = 0; count < waveBossCount; count++)
+            {       
+                EnemyController enemyObject = Instantiate(bossEnemyPrefab,
+                    GeneratePosition(firstBorderObject, secondBorderObject),
+                    Quaternion.LookRotation(new Vector3(0, 0, -1)),
+                    transform);
+                //-------- Установка типа и доп. характеристик босса -------//
+                SetStats(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier*3, currentStats * 3, speed);
 
-            enemyObject.gameObject.SetActive(false);
-            enemiesList.Add(enemyObject);
+                enemyObject.gameObject.SetActive(false);
+                enemiesList.Add(enemyObject);
+            }
         }
 
         if (spawnState)
@@ -97,23 +110,43 @@ public class EnemySpawner : MonoBehaviour
     //Включение объектов
     IEnumerator ReleaseEnemies()
     {
-        for (int count = 0; count < enemiesList.Count; count++)
+        for (int count = 0; count < waveEnemiesCount; count++)
         {           
             enemiesList[count].gameObject.SetActive(true);
             yield return new WaitForSeconds(timeBetweenSpawn);
-        }       
+        }
+        if (isBoosWave)
+        {
+            yield return new WaitForSeconds(timeBetweenSpawnBoss);
+            for (int count = 0; count < waveBossCount; count++)
+            {
+                enemiesList[waveEnemiesCount + count].gameObject.SetActive(true);
+                yield return new WaitForSeconds(timeBetweenSpawnBoss);
+            }
+        }
     }
-
+    //Выставление характеристик мобов от уровня
+    void CheckWavesCountOnUpgrades()
+    {
+        currentStats = startStats + (statsUpgrade * (waveCount / waveToUpgradeStats)); 
+        waveEnemiesCount = startEnemiesCount + (waveCount + 1) / waveToUpgradeCount;
+        if ((waveCount + 1) % waveToBoss == 0)
+        {
+            isBoosWave = true;
+            waveBossCount = (waveCount + 1) / waveToBoss;
+        }
+        else isBoosWave = false;
+    }
     public void SetSpawnState(bool state)
     {
         spawnState = state;
     }
 
-    void SetBonuses(EnemyScriptableObject[] enemiesArr, EnemyController enemy, float moneyMultiplier, float hltBonus, float dmgBonus)
+    void SetStats(EnemyScriptableObject[] enemiesArr, EnemyController enemy, float multiplier, float stats, float speed)
     {
-        enemy.GetComponent<EnemyData>().SetCostMultiplier(moneyMultiplier);
-        enemy.GetComponent<EnemyData>().SetMaxhealthBonus(hltBonus);
-        enemy.GetComponent<EnemyData>().SetAttackBonus(dmgBonus);
+        enemy.GetComponent<EnemyData>().SetMultiplier(multiplier);
+        enemy.GetComponent<EnemyData>().SetStats(stats);
+        enemy.GetComponent<EnemyData>().SetSpeed(speed);
         
         int randomIndex = Random.Range(0, enemiesArr.Length);
         enemy.GetComponent<EnemyData>().ChooseEnemyType(enemiesArr[randomIndex]);
@@ -142,36 +175,25 @@ public class EnemySpawner : MonoBehaviour
     //При смерти противника
     void OnEnemyDied()
     {
-         diedEnemies++;
-
-        if ((diedEnemies + killedEnemies) == enemiesList.Count)
-        {                    
-            gameManager.OnWinRound();
-        }       
+        diedEnemies++;
+        WinProccess();
     }
     //Когда пушка убивает
     void OnEnemyKilled(float cost)
     {
         killedEnemies++;
-
-        if ((diedEnemies + killedEnemies) == enemiesList.Count)
+        WinProccess();
+    }
+    void WinProccess()
+    {
+        if ((diedEnemies + killedEnemies) == enemiesList.Count && castleController.GetHealth() > 0)
         {
-            waveCount++;
-            CheckWavesCountOnUpgrades();
+            waveCount++;           
             gameManager.OnWinRound();
         }
     }
     //Улучшение характеристик монстров В зависимости от волны
-    void CheckWavesCountOnUpgrades()
-    {
-        if(waveCount % 5 == 0)
-            maxHealthBonus++;
-        if (waveCount % 10 == 0)
-        {
-            damageBonus++;
-            waveEnemiesCount += waveEnemiesCountUpgrade;
-        }
-    }
+   
 
     public void StopAllEnemies()
     {

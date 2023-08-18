@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d89eb9e015019947ba13f4cf02798b2, type: 3}
-  m_Name: Rhino
+  m_Name: Ninja
   m_EditorClassIdentifier: 
-  enemyName: Rhino
-  speed: 20
-  health: 3
+  enemyName: NInja
+  speed: 15
+  health: 1
   damage: 1
   moneyCost: 1
   timeBetweenAtack: 1
-  prefab: {fileID: 6956143492035891694, guid: 7ceaccc8828b1f347a93cddf2bc98dc5, type: 3}
-  collider: {fileID: 9132573721702555806, guid: 7ceaccc8828b1f347a93cddf2bc98dc5, type: 3}
+  prefab: {fileID: 6782115970983150914, guid: d3fe0b0564b433344b0edd2d2aa75489, type: 3}
+  collider: {fileID: 4966601587140259013, guid: d3fe0b0564b433344b0edd2d2aa75489, type: 3}

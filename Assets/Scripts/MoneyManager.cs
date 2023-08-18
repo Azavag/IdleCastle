@@ -14,8 +14,7 @@ public class MoneyManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI moneyCountText;
     [SerializeField] TextMeshProUGUI waveMoneyCountText;
     public float MoneyMultiplier { set; get; }
-    Color32 originalColor;
-    [SerializeField] Color32 redColor;
+    
     [SerializeField] Color32 addedColor;
 
     private void Awake()
@@ -25,7 +24,6 @@ public class MoneyManager : MonoBehaviour
     void Start()
     {
         MoneyMultiplier = 1;
-        originalColor = moneyCountText.color;
     }  
     public bool TryToSpend(float price)
     {
@@ -48,14 +46,13 @@ public class MoneyManager : MonoBehaviour
     {
         StartCoroutine(UpdateMoneyAnimation(waveMoneyCountText, waveMoneyCount, diff));
         waveMoneyCount += diff;
-        //waveMoneyCountText.text = "Заработано: " + waveMoneyCount.ToString("0.00") + "$";
     }
 
   
 
-    public void ChangeMoneyMultiplier(float diff)
+    public void SetMoneyMultiplier(float multiplier)
     {
-        MoneyMultiplier = 1 + diff;
+        MoneyMultiplier = multiplier;
     }
       
     void OnEnemyKilled(float cost)
@@ -75,7 +72,7 @@ public class MoneyManager : MonoBehaviour
         moneyCountText.text = GetMoneyCount().ToString("0.00") + "$";
       
     }
-    //Анимация обновления
+    //Анимация обновления числа с originalColor до originalColor+difference внутри text
     IEnumerator UpdateMoneyAnimation(TextMeshProUGUI text, float orginalNumber, float difference)
     {
         float animationNumber = orginalNumber;
@@ -83,10 +80,17 @@ public class MoneyManager : MonoBehaviour
         float timeElapsed = 0f;
         float tempMoney = 0;
         float stepMoney = tempMoney;
-        originalColor = text.color;
-        if (difference > 0)
+        Color32 originalColor = text.color;
+       
+        if (difference == 0)
+        {
+            text.text = orginalNumber.ToString();
+            yield return null;
+        }
+        else if (difference > 0)
             text.color = addedColor;
-        else yield return null;
+
+
 
         while (timeElapsed < addMoneyAnimationTime)
         {

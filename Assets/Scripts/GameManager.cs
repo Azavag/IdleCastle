@@ -45,8 +45,8 @@ public class GameManager : MonoBehaviour
         moneyManager.ResetWaveMoneyCount();
         castleController.ResetHealth();
     }
-    //Начало раунда
-    public void StartGame()
+    //Начало раунда(По кнопке)
+    public void StartRound()
     {
         enemySpawner.SetSpawnState(true);
         enemySpawner.StartSpawn();      
@@ -60,12 +60,14 @@ public class GameManager : MonoBehaviour
     //При победе
     public void OnWinRound()
     {
+        Debug.Log("win");
         resultText.text = successText;
         UpdateWaveCountText();
         StartCoroutine(ShowFinalCanvas());
     }
     public void OnLoseRound()
     {
+        Debug.Log("lose");
         resultText.text = failureText;
         StartCoroutine(ShowFinalCanvas());
     }
@@ -77,7 +79,7 @@ public class GameManager : MonoBehaviour
         cannonController.ChangeShootState(false);
         yield return new WaitForSeconds(0.6f);
 
-        
+        cannonController.ResetAllBullets();
         UpdateWaveEnemiesCountText();
         endWavePanel.SetActive(true);
         moneyManager.ChangeWaveMoneyCount(moneyManager.GetTempWaveMoneyCount());

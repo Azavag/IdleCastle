@@ -8,11 +8,11 @@ using Slider = UnityEngine.UI.Slider;
 
 public class CastleController : MonoBehaviour, IDamagable
 {
-    
-    [SerializeField] TextMeshProUGUI healthText;
-    [SerializeField] float maxHealth;
     [SerializeField] GameManager gameManager;
+    [SerializeField] float maxHealth;  
     [SerializeField] float currentHealth;
+    [SerializeField] float healthUpgrade;
+    [Header("Слайдер")]
     [SerializeField] Slider slider;
     [SerializeField] Gradient gradient;
     [SerializeField] UnityEngine.UI.Image fillImage;
@@ -41,14 +41,14 @@ public class CastleController : MonoBehaviour, IDamagable
         UpdateHealthSlider();
         if (currentHealth <= 0)
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             gameManager.OnLoseRound();
         }       
     }
 
-    public void ChangeMaxHealth(float diff)
+    public void ChangeMaxHealth()
     {
-        maxHealth += diff;
+        maxHealth += healthUpgrade;
         ResetHealth();
     }
     public float GetHealth()
