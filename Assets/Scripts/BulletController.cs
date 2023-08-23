@@ -8,7 +8,7 @@ public class BulletController : MonoBehaviour
     Vector3 shootVector;
     [SerializeField] GameObject particlesPrefab;
     float bulletSpeed;
-    float bulletDamage;
+    int bulletDamage;
     float rangeLimitX = 200f, rangeLimitZ = 250f;
     void Start()
     {
@@ -33,7 +33,7 @@ public class BulletController : MonoBehaviour
     {
         bulletSpeed = speed;
     }
-    public void SetShootDamage(float dmg)
+    public void SetShootDamage(int dmg)
     {
         bulletDamage = dmg;
     }

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 using UnityEngine;
 
 public class EnemyData : MonoBehaviour
@@ -11,13 +8,11 @@ public class EnemyData : MonoBehaviour
     BoxCollider boxCollider;
 
     public Vector3 colliderScale;
-    public float moveSpeed { get; set; }
-    public float maxHealth { get; set; }
-    public float currentHealth { get; set; }
-    public float damage { get; set; }
+    public int moveSpeed { get; set; }
+    public int maxHealth { get; set; }
+    public int currentHealth { get; set; }
+    public int damage { get; set; }
     public float cost = 1;
-    public float timeAttack { get; set; }
-
 
     private void Start()
     {
@@ -54,22 +49,18 @@ public class EnemyData : MonoBehaviour
     {
         cost *= multipleir;
     }
-    public void SetStats(float health)
+    public void SetStats(int health)
     {
         maxHealth = health;
         currentHealth = maxHealth;
         damage = maxHealth;
     }
-    public void SetAttackDmg(float dmg)
+    public void SetAttackDmg(int dmg)
     {
         damage = dmg;
     }
-    public void SetSpeed(float speed)
+    public void SetSpeed(int speed)
     {
         moveSpeed = speed;
     }
-
-
-
-
 }

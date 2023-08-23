@@ -17,26 +17,27 @@ public class EnemySpawner : MonoBehaviour
     List<EnemyController> enemiesList;
     int killedEnemies;
     int diedEnemies;
-    
-    [Header ("Правила спавна объектов")]
+
+    [Header("Правила спавна объектов")]
     [SerializeField] float minTimeBetweenSpawn;
-    [SerializeField] float maXtimeBetweenSpawn;
+    [SerializeField] float maxTimeBetweenSpawn;
     [SerializeField] GameObject firstBorderObject;
     [SerializeField] GameObject secondBorderObject;
     [SerializeField] int waveToUpgradeStats;
     [SerializeField] int waveToUpgradeCount;
     [SerializeField] int waveToBoss;
     float timeBetweenSpawn;
-    [SerializeField] float timeBetweenSpawnBoss;
+    [SerializeField] int enemiesLimit;
+    [SerializeField] int bossLimit;
     float xSpawnPosition;
     float zSpawnPosition;
     float ySpawnPosition = 0;
     [Header("Правила улучшения монстров")]
-    [SerializeField] float currentStats;
-    float damage;
-    [SerializeField] float speed;
-    [SerializeField] float startStats = 1;
-    [SerializeField] float statsUpgrade;
+    int currentStats;
+    [SerializeField] int speed;
+    int startStats = 1;
+    [SerializeField] int statsUpgrade;
+    [SerializeField] int bossMultiplier;
     [Header("Объекты")]
     [SerializeField] EnemyController enemyPrefab;
     [SerializeField] EnemyController bossEnemyPrefab;
@@ -56,11 +57,10 @@ public class EnemySpawner : MonoBehaviour
     }
     void Start()
     {
-        enemiesList = new List<EnemyController>();        
+        enemiesList = new List<EnemyController>();
+        waveCount = Progress.Instance.playerInfo.rounds;
         killedEnemies = 0;
         diedEnemies = 0;
-
-        timeBetweenSpawn = Random.Range(minTimeBetweenSpawn, maXtimeBetweenSpawn);
     }
 
     public void StartSpawn()
@@ -72,9 +72,9 @@ public class EnemySpawner : MonoBehaviour
         //Спавн обычных мобов
         for (int count = 0; count < waveEnemiesCount; count++)
         {
-            EnemyController enemyObject = Instantiate(enemyPrefab, 
+            EnemyController enemyObject = Instantiate(enemyPrefab,
                 GeneratePosition(firstBorderObject, secondBorderObject),
-                Quaternion.LookRotation(new Vector3(0, 0, -1)), 
+                Quaternion.LookRotation(new Vector3(0, 0, -1)),
                 transform);
 
             //-------- Установка типа и доп. характеристик монстров -------//
@@ -83,20 +83,23 @@ public class EnemySpawner : MonoBehaviour
             enemyObject.gameObject.SetActive(false);
             enemiesList.Add(enemyObject);
         }
+
+
         //Спавн босса
         if (isBoosWave)
         {
+            int enemiesInterval = waveEnemiesCount / waveBossCount;
             for (int count = 0; count < waveBossCount; count++)
-            {       
+            {
                 EnemyController enemyObject = Instantiate(bossEnemyPrefab,
                     GeneratePosition(firstBorderObject, secondBorderObject),
                     Quaternion.LookRotation(new Vector3(0, 0, -1)),
                     transform);
                 //-------- Установка типа и доп. характеристик босса -------//
-                SetStats(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier*3, currentStats * 3, speed);
-
+                SetStats(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier * 3, currentStats * bossMultiplier, (int)(0.75f*speed));
                 enemyObject.gameObject.SetActive(false);
-                enemiesList.Add(enemyObject);
+
+                enemiesList.Insert((count + 1) * enemiesInterval, enemyObject);
             }
         }
 
@@ -110,30 +113,27 @@ public class EnemySpawner : MonoBehaviour
     //Включение объектов
     IEnumerator ReleaseEnemies()
     {
-        for (int count = 0; count < waveEnemiesCount; count++)
-        {           
+        yield return new WaitForSeconds(1.2f);
+        for (int count = 0; count < enemiesList.Count; count++)
+        {
+            timeBetweenSpawn = Random.Range(minTimeBetweenSpawn, maxTimeBetweenSpawn);
             enemiesList[count].gameObject.SetActive(true);
             yield return new WaitForSeconds(timeBetweenSpawn);
-        }
-        if (isBoosWave)
-        {
-            yield return new WaitForSeconds(timeBetweenSpawnBoss);
-            for (int count = 0; count < waveBossCount; count++)
-            {
-                enemiesList[waveEnemiesCount + count].gameObject.SetActive(true);
-                yield return new WaitForSeconds(timeBetweenSpawnBoss);
-            }
         }
     }
     //Выставление характеристик мобов от уровня
     void CheckWavesCountOnUpgrades()
     {
-        currentStats = startStats + (statsUpgrade * (waveCount / waveToUpgradeStats)); 
+        currentStats = startStats + (statsUpgrade * (waveCount / waveToUpgradeStats));
         waveEnemiesCount = startEnemiesCount + (waveCount + 1) / waveToUpgradeCount;
+        if (waveEnemiesCount > enemiesLimit)
+            waveEnemiesCount = enemiesLimit;
         if ((waveCount + 1) % waveToBoss == 0)
         {
             isBoosWave = true;
             waveBossCount = (waveCount + 1) / waveToBoss;
+            if (waveBossCount > bossLimit)
+                waveBossCount = bossLimit;
         }
         else isBoosWave = false;
     }
@@ -142,12 +142,17 @@ public class EnemySpawner : MonoBehaviour
         spawnState = state;
     }
 
-    void SetStats(EnemyScriptableObject[] enemiesArr, EnemyController enemy, float multiplier, float stats, float speed)
+    void SetStats
+        (EnemyScriptableObject[] enemiesArr,
+        EnemyController enemy,
+        float multiplier,
+        int stats,
+        int speed)
     {
         enemy.GetComponent<EnemyData>().SetMultiplier(multiplier);
         enemy.GetComponent<EnemyData>().SetStats(stats);
         enemy.GetComponent<EnemyData>().SetSpeed(speed);
-        
+
         int randomIndex = Random.Range(0, enemiesArr.Length);
         enemy.GetComponent<EnemyData>().ChooseEnemyType(enemiesArr[randomIndex]);
     }
@@ -188,12 +193,14 @@ public class EnemySpawner : MonoBehaviour
     {
         if ((diedEnemies + killedEnemies) == enemiesList.Count && castleController.GetHealth() > 0)
         {
-            waveCount++;           
+            waveCount++;
+            Progress.Instance.playerInfo.rounds = waveCount;
+            YandexSDK.Save();
             gameManager.OnWinRound();
         }
     }
     //Улучшение характеристик монстров В зависимости от волны
-   
+
 
     public void StopAllEnemies()
     {
@@ -214,7 +221,7 @@ public class EnemySpawner : MonoBehaviour
         {
             int countAlives = enemiesList.Count;
             for (int countEnemy = 0; countEnemy < countAlives; countEnemy++)
-            {                
+            {
                 Destroy(enemiesList[countEnemy].gameObject);
             }
             enemiesList.Clear();

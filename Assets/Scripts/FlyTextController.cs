@@ -61,7 +61,5 @@ public class FlyTextController : MonoBehaviour
     public void StartLastAnimation()
     {
         isLastAnimation = true;
-    }
-    
-        
+    }          
 }

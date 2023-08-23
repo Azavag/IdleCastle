@@ -3,23 +3,22 @@ using TMPro;
 using UnityEngine;
 
 
-public class EnemyController: MonoBehaviour, IDamagable
+public class EnemyController : MonoBehaviour, IDamagable
 {
     EnemyData enemyData;
     Canvas enemyCanvas;
     FlyTextController animatedText;
     bool isMoving;                          //Движение
-    bool isAttacking;                       //Атака
-    [SerializeField] float moveSpeed;
-
     [SerializeField] GameObject deathParticlesPrefab;
+    AudioSource audioSource;
     
     void Start()
-    {      
+    {
+        audioSource = GetComponentInChildren<AudioSource>();
         enemyData = GetComponent<EnemyData>();
-        enemyCanvas = GetComponentInChildren<Canvas>();
-        
+        enemyCanvas = GetComponentInChildren<Canvas>();      
         animatedText = enemyCanvas.GetComponentInChildren<FlyTextController>();
+        
         ChangeMoveState(true);
     }
 
@@ -45,7 +44,7 @@ public class EnemyController: MonoBehaviour, IDamagable
     }
 
     //Получение урона
-    public void ApplyDamage(float damageValue)
+    public void ApplyDamage(int damageValue)
     {
         enemyData.currentHealth -= damageValue;   
         animatedText.StartAnimate(damageValue);
@@ -59,8 +58,7 @@ public class EnemyController: MonoBehaviour, IDamagable
                 enemyCanvas.transform.position.z);
                     
             ChangeMoveState(false);
-            
-            //EventManager.OnEnemDied();
+
             EventManager.OnEnemKilled(enemyData.cost);
             animatedText.StartLastAnimation();
             DeathAnimation();
@@ -76,9 +74,18 @@ public class EnemyController: MonoBehaviour, IDamagable
         deathParticlesPrefab.SetActive(true);
         float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
 
+        GameObject audioObject = audioSource.gameObject;
+        audioObject.transform.SetParent(null);
+        FindObjectOfType<SoundManager>().Play("EnemyDeath");
+        Sound deathSound = FindObjectOfType<SoundManager>().GetSound("EnemyDeath");
+        audioSource.clip = deathSound.clip;
+        Destroy(audioObject, audioSource.clip.length);
+        audioSource.volume = deathSound.volume;
+        audioSource.pitch = deathSound.pitch;
+        audioSource.Play();
+        
         gameObject.SetActive(false);
     }
-
 
     
 }

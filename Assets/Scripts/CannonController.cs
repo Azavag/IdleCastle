@@ -10,13 +10,13 @@ public class CannonController : MonoBehaviour
     [SerializeField] BulletsPool bulletsPool;
     List<BulletController> bullets = new List<BulletController>();
     [Header("Харакетиристики пушки")]
-    [SerializeField] float bulletSpeed = 50f;
+    [SerializeField] float bulletSpeed = 70f;
     [SerializeField] float timeBetweenShots = 0.5f;
-    [SerializeField] float bulletDamage = 1;
+    [SerializeField] int bulletDamage = 1;
     [SerializeField] CannonScriptableObject[] cannons;
     [Header("Улучшение пушки")]
     [SerializeField] int upgradeSteps = 10;
-    [SerializeField] float bulletDamageUpgradeStep = 0.1f;
+    [SerializeField] int bulletDamageUpgradeStep = 1;
 
     CannonScriptableObject cannonType;
     Transform cannonBody;
@@ -32,13 +32,12 @@ public class CannonController : MonoBehaviour
     int upgradesCounter = 0;
     int cannonNumber = 0;
 
-
     private void Start()
     {
+        bulletDamage = Progress.Instance.playerInfo.damage;
+        upgradesCounter = Progress.Instance.playerInfo.cannonUpgrades;
         CreateCannonObject(cannons[cannonNumber]);
-
-        bulletsPool.CreateBulletsPool();
-       
+        bulletsPool.CreateBulletsPool();    
         canShoot = false;
         ResetTimer();
     }
@@ -73,9 +72,14 @@ public class CannonController : MonoBehaviour
     {
         bulletDamage += bulletDamageUpgradeStep;       
         upgradesCounter++;
+        Progress.Instance.playerInfo.damage = bulletDamage;
+        Progress.Instance.playerInfo.cannonUpgrades = upgradesCounter;
         //Смена пушки после n апгрейдов
-        if (upgradesCounter == upgradeSteps)           
+        if (upgradesCounter == upgradeSteps)
+        {
+            FindObjectOfType<SoundManager>().Play("CannonUpgrade");
             ChangeCannonType(++cannonNumber);
+        }
     }
     //По кнопке улучшения и после 10 улучшений
     public void ChangeCannonType(int number)
@@ -118,12 +122,14 @@ public class CannonController : MonoBehaviour
     {
         if (canShoot)
         {
+            FindObjectOfType<SoundManager>().Play("Fire");
             // Создаем пулю и задаем ей начальную позицию, направление и скорость
             BulletController spawnedBullet = bulletsPool.SpawnFromPool(firePoint.position);
             bullets.Add(spawnedBullet);
             spawnedBullet.SetShootVector(firePoint.forward);
             spawnedBullet.SetShootSpeed(bulletSpeed);
             spawnedBullet.SetShootDamage(bulletDamage);
+            EventManager.OnShotMaked();
         }
         else return;
 
