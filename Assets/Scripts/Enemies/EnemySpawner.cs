@@ -33,11 +33,11 @@ public class EnemySpawner : MonoBehaviour
     float zSpawnPosition;
     float ySpawnPosition = 0;
     [Header("Правила улучшения монстров")]
-    int currentStats;
+    [SerializeField] float currentStats;
     [SerializeField] int speed;
-    int startStats = 1;
-    [SerializeField] int statsUpgrade;
-    [SerializeField] int bossMultiplier;
+    float startStats = 1;
+    [SerializeField] float statsUpgrade;
+    [SerializeField] float bossMultiplier;
     [Header("Объекты")]
     [SerializeField] EnemyController enemyPrefab;
     [SerializeField] EnemyController bossEnemyPrefab;
@@ -96,7 +96,7 @@ public class EnemySpawner : MonoBehaviour
                     Quaternion.LookRotation(new Vector3(0, 0, -1)),
                     transform);
                 //-------- Установка типа и доп. характеристик босса -------//
-                SetStats(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier * 3, currentStats * bossMultiplier, (int)(0.75f*speed));
+                SetStats(bossEnemyTypeArr, enemyObject, moneyManager.MoneyMultiplier * 3, currentStats * bossMultiplier, (int)(0.6f*speed));
                 enemyObject.gameObject.SetActive(false);
 
                 enemiesList.Insert((count + 1) * enemiesInterval, enemyObject);
@@ -146,7 +146,7 @@ public class EnemySpawner : MonoBehaviour
         (EnemyScriptableObject[] enemiesArr,
         EnemyController enemy,
         float multiplier,
-        int stats,
+        float stats,
         int speed)
     {
         enemy.GetComponent<EnemyData>().SetMultiplier(multiplier);

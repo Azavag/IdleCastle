@@ -8,12 +8,8 @@ public class BulletController : MonoBehaviour
     Vector3 shootVector;
     [SerializeField] GameObject particlesPrefab;
     float bulletSpeed;
-    int bulletDamage;
-    float rangeLimitX = 200f, rangeLimitZ = 250f;
-    void Start()
-    {
-        
-    }
+    float bulletDamage;
+    float rangeLimitX = 200f, rangeLimitZ = 200f;
 
     // Update is called once per frame
     void Update()
@@ -33,15 +29,14 @@ public class BulletController : MonoBehaviour
     {
         bulletSpeed = speed;
     }
-    public void SetShootDamage(int dmg)
+    public void SetShootDamage(float dmg)
     {
         bulletDamage = dmg;
     }
 
     //При прикосновении пули
     private void OnTriggerEnter(Collider other)
-    {
-       
+    {      
         if (other.gameObject.CompareTag("Enemy"))
         {
             EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
@@ -53,14 +48,10 @@ public class BulletController : MonoBehaviour
                     Quaternion.identity);
                 ParticleSystem parts = partsClone.GetComponent<ParticleSystem>();
                 float totalDuration = parts.main.duration + parts.main.startLifetime.constantMax;
-                Destroy(partsClone, totalDuration);
-                
-            }
-            
-            
+                Destroy(partsClone, totalDuration);               
+            }                     
             ResetPostion();
         }
-
     }
 
     public void ResetPostion()

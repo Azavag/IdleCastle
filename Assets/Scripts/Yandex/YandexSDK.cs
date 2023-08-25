@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class YandexSDK : MonoBehaviour
 { 
@@ -111,20 +112,17 @@ public class YandexSDK : MonoBehaviour
     public void GetLeaderboardEntries()
     {
 #if !UNITY_EDITOR
-        jsonEntries = null;
-        isDataGetting = false;
         ShowLeaderBoard();
 #endif       
     }
     public void BoardEntriesReady(string _data)
     {
-        isDataGetting = true;
         LeaderBoardReady?.Invoke(_data);      
     }
     public void SetJSONEntries(string json)
-    {
+    {      
         jsonEntries = json;
-        leaderboard.FillLeaderboardData(json);
+        leaderboard.OpenEntries();
     }
     public string GetJSONEntries()
     {
@@ -139,6 +137,10 @@ public class YandexSDK : MonoBehaviour
     public bool GetDataCheck()
     {
         return isDataGetting;
+    }
+    public void SetDataCheck(bool state)
+    {
+        isDataGetting = state;
     }
     static public void GetCurrentLanguage()
     {

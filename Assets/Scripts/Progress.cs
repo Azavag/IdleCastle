@@ -8,9 +8,10 @@ using System.Runtime.InteropServices;
 public class PlayerInfo
 {
     public int rounds = 0;          //++
-    public int damage = 1;          //++
+    public float damage = 1;          //++
     public int cannonUpgrades = 0;  //++
-    public int maxHealth = 5;       //++
+    public int cannonNumber = 0;
+    public float maxHealth = 5;       //++
     public float cannonPrice = 1;   //++
     public float castlePrice = 1;   //++
     public float incomePrice = 1;   //++

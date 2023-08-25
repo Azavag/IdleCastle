@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,9 +10,9 @@ using Slider = UnityEngine.UI.Slider;
 public class CastleController : MonoBehaviour, IDamagable
 {
     [SerializeField] GameManager gameManager;
-    [SerializeField] int maxHealth;  
-    [SerializeField] int currentHealth;
-    [SerializeField] int healthUpgrade;
+    [SerializeField] float maxHealth;  
+    [SerializeField] float currentHealth;
+    [SerializeField] float healthUpgrade;
     [Header("Слайдер")]
     [SerializeField] Slider slider;
     [SerializeField] Gradient gradient;
@@ -37,9 +38,9 @@ public class CastleController : MonoBehaviour, IDamagable
         slider.value = currentHealth;
         fillImage.color = gradient.Evaluate(slider.normalizedValue);
     }
-    public void ApplyDamage(int damageValue)
+    public void ApplyDamage(float damageValue)
     {
-        currentHealth -= damageValue;
+        currentHealth -= (float)Math.Round(damageValue,2);
         UpdateHealthSlider();
         if (currentHealth <= 0)
         {            

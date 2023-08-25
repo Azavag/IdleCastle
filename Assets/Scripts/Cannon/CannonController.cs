@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,11 +13,11 @@ public class CannonController : MonoBehaviour
     [Header("Харакетиристики пушки")]
     [SerializeField] float bulletSpeed = 70f;
     [SerializeField] float timeBetweenShots = 0.5f;
-    [SerializeField] int bulletDamage = 1;
+    [SerializeField] float bulletDamage = 1;
     [SerializeField] CannonScriptableObject[] cannons;
     [Header("Улучшение пушки")]
     [SerializeField] int upgradeSteps = 10;
-    [SerializeField] int bulletDamageUpgradeStep = 1;
+    [SerializeField] float bulletDamageUpgradeStep = 1;
 
     CannonScriptableObject cannonType;
     Transform cannonBody;
@@ -36,6 +37,7 @@ public class CannonController : MonoBehaviour
     {
         bulletDamage = Progress.Instance.playerInfo.damage;
         upgradesCounter = Progress.Instance.playerInfo.cannonUpgrades;
+        cannonNumber = Progress.Instance.playerInfo.cannonNumber;
         CreateCannonObject(cannons[cannonNumber]);
         bulletsPool.CreateBulletsPool();    
         canShoot = false;
@@ -56,8 +58,7 @@ public class CannonController : MonoBehaviour
     }
     public void CreateCannonObject(CannonScriptableObject cannonScriptableObject)
     {
-        Destroy(cannonModelObject);                         
-        upgradesCounter = 0;                               
+        Destroy(cannonModelObject);                                                            
         // --------Создание новой пушки---------
         cannonType = cannonScriptableObject;
         cannonModelObject = Instantiate(cannonType.cannonModel, transform.position,
@@ -77,8 +78,14 @@ public class CannonController : MonoBehaviour
         //Смена пушки после n апгрейдов
         if (upgradesCounter == upgradeSteps)
         {
-            FindObjectOfType<SoundManager>().Play("CannonUpgrade");
-            ChangeCannonType(++cannonNumber);
+            if (cannonNumber < cannons.Length - 1)
+            {
+                FindObjectOfType<SoundManager>().Play("CannonUpgrade");
+                ChangeCannonType(++cannonNumber);
+                upgradesCounter = 0;
+                Progress.Instance.playerInfo.cannonNumber = cannonNumber;
+                Progress.Instance.playerInfo.cannonUpgrades = upgradesCounter;
+            }
         }
     }
     //По кнопке улучшения и после 10 улучшений

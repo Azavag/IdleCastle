@@ -29,7 +29,7 @@ public class FlyTextController : MonoBehaviour
         {          
             if(_damage % 1 == 0)
                 damageText.text = _damage.ToString("f0");
-            else damageText.text = _damage.ToString("f1");
+            else damageText.text = _damage.ToString("f2");
 
             tPosition += Time.deltaTime / animationTime;
             Vector3 targetPosition = transform.position + new Vector3(0f, 0.2f, 0f);

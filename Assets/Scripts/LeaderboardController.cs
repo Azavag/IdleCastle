@@ -1,18 +1,27 @@
 using TMPro;
 using UnityEngine;
 using SimpleJSON;
-
+using UnityEngine.SocialPlatforms.Impl;
+using DentedPixel;
+using System;
 
 public class LeaderboardController : MonoBehaviour
 {
     [SerializeField] GameObject[] otherPlayersEntries;
     [SerializeField] GameObject playerEntry, allEntries, alertAuth, leaderboardObject;
     [SerializeField] YandexSDK yandexSDK;
-
+    [SerializeField] GameObject loadingPanel, loadingBar;
+    event Action EndLoad;
+    float loadTime = 1f;
     Transform scoreTextObj, nameTextObj;
     string jsonData;
     string pronounText;
     string unknownUserText;
+
+    private void Awake()
+    {
+        EndLoad += HideLoadingPanel;
+    }
     void Start()
     {
         if (Language.isRusLang)
@@ -26,41 +35,40 @@ public class LeaderboardController : MonoBehaviour
             unknownUserText = "Unknown user";
         }
         yandexSDK = FindObjectOfType<YandexSDK>();
-        UpdateLeaderBoard();
+        Launch();
+    }
+
+    private void FixedUpdate()
+    {
+
     }
     //По кнопке открытия лидерборда
     public void UpdateLeaderBoard()
     {
-        yandexSDK.GetLeaderboardEntries();       
+        LoadingAnimation();
+        yandexSDK.GetLeaderboardEntries();
     }
 
-    //По кнопке авторизации
-    public void MakeAuth()
+    void LoadingAnimation()
     {
-        YandexSDK.OpenAuthorization();
+        loadingPanel.SetActive(true);
+        LeanTween.scaleX(loadingBar,1f,loadTime).setOnComplete(EndLoad);
     }
-    //Вызывается в jslib
-    public void OpenAuthAlert()
+  
+    void HideLoadingPanel()
     {
+        loadingPanel.SetActive(false);
+        LeanTween.scaleX(loadingBar, 0.01f, 0f);
+    }
+    public void Launch()
+    {
+        loadingPanel.SetActive(true);
         allEntries.SetActive(false);
         alertAuth.SetActive(true);
-    }
-    //Вызывается в jslib
-    public void OpenEntries()
-    {
-        alertAuth.SetActive(false);
-        allEntries.SetActive(true);
-    }
-    //В jslib после нажатия на кнопку авторизации
-    public void CloseAuthWindow()
-    {
-        leaderboardObject.SetActive(false);
     }
 
     public void FillLeaderboardData(string jsonData)
     {
-        yandexSDK.CheckAuthorization();
-
         var json = JSON.Parse(jsonData);
         var userRank = json["userRank"].ToString();
         //Если userScore = 0, То выводить -
@@ -102,5 +110,33 @@ public class LeaderboardController : MonoBehaviour
         playerEntry.transform.Find("EntryBackground/PlaceText").GetComponent<TextMeshProUGUI>().text = userRank;
 
     }
+    //
+    public void OpenAuthAlert()
+    {
+        allEntries.SetActive(false);
+        alertAuth.SetActive(true);
+    }
+    //
+    public void OpenEntries()
+    {
+        alertAuth.SetActive(false);
+        allEntries.SetActive(true);
+        FillLeaderboardData(yandexSDK.GetJSONEntries());
+    }
+    //По кнопке авторизации
+    public void MakeAuth()
+    {
+        YandexSDK.OpenAuthorization();
+    }
 
+    //В jslib после нажатия на кнопку авторизации
+    public void CloseAuthWindow()
+    {
+        leaderboardObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        EndLoad -= HideLoadingPanel;
+    }
 }

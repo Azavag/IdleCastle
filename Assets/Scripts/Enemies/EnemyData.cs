@@ -9,9 +9,9 @@ public class EnemyData : MonoBehaviour
 
     public Vector3 colliderScale;
     public int moveSpeed { get; set; }
-    public int maxHealth { get; set; }
-    public int currentHealth { get; set; }
-    public int damage { get; set; }
+    public float maxHealth { get; set; }
+    public float currentHealth { get; set; }
+    public float damage { get; set; }
     public float cost = 1;
 
     private void Start()
@@ -49,9 +49,9 @@ public class EnemyData : MonoBehaviour
     {
         cost *= multipleir;
     }
-    public void SetStats(int health)
+    public void SetStats(float stats)
     {
-        maxHealth = health;
+        maxHealth = stats;
         currentHealth = maxHealth;
         damage = maxHealth;
     }

@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using System;
 
 
 public class EnemyController : MonoBehaviour, IDamagable
@@ -44,9 +45,10 @@ public class EnemyController : MonoBehaviour, IDamagable
     }
 
     //Получение урона
-    public void ApplyDamage(int damageValue)
+    public void ApplyDamage(float damageValue)
     {
-        enemyData.currentHealth -= damageValue;   
+        enemyData.currentHealth -= (float)Math.Round(damageValue,2);
+        
         animatedText.StartAnimate(damageValue);
         if (enemyData.currentHealth <= 0)
         {
