@@ -74,8 +74,8 @@ public class LeaderboardController : MonoBehaviour
         //Если userScore = 0, То выводить -
         if (userRank == "0")
             userRank = "-";
-        var count = (int)json["entries"].Count;
-        
+        var count = Math.Min((int)json["entries"].Count, otherPlayersEntries.Length);
+
         for (int i = 0; i < count; i++)
         {
             var score = json["entries"][i]["score"].ToString();
