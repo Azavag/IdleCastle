@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject pauseButton;
     [SerializeField] GameObject leaderboardObject;
     [SerializeField] GameObject rewardedButton;
+    [SerializeField] GameObject buttonsOnEndLevelPanel;
     [Header("Text элементы")]
     [SerializeField] TextMeshProUGUI resultText;
     [SerializeField] GameObject waveCountObject;
@@ -89,7 +90,8 @@ public class GameManager : MonoBehaviour
         //waveCountObject.SetActive(true);
         rewardedButton.SetActive(true);
         castleController.ResetHealth();
-        advManager.ShowAdv();
+        buttonsOnEndLevelPanel.SetActive(false);
+
     }
     //По кнопке
     public void PressContinue()
@@ -129,7 +131,8 @@ public class GameManager : MonoBehaviour
 
     //Конец раунда
     IEnumerator ShowFinalCanvas()
-    {      
+    {
+        buttonsOnEndLevelPanel.SetActive(false);
         enemySpawner.StopAllEnemies();       
         cannonController.ChangeShootState(false);
         yield return new WaitForSeconds(0.6f);
@@ -140,9 +143,12 @@ public class GameManager : MonoBehaviour
         moneyManager.ChangeWaveMoneyCount(moneyManager.GetTempWaveMoneyCount());
         moneyCountObject.SetActive(true);
         cannonController.ResetCannonRotation();
-        enemySpawner.ClearAllEnemies();
-        
+        enemySpawner.ClearAllEnemies();        
         pauseButton.SetActive(false);
+        yield return new WaitForSeconds(2f);
+        advManager.ShowAdv();
+        yield return new WaitForSeconds(0.5f);
+        buttonsOnEndLevelPanel.SetActive(true);
 
     }
     //По кнопке

@@ -8,7 +8,7 @@ public class MoneyManager : MonoBehaviour
     [SerializeField] float moneyCount = 0;
     [SerializeField] GameManager gameManager;
     [SerializeField] AnimationCurve animationCurve;
-    float addMoneyAnimationTime = 1;
+    float addMoneyAnimationTime = 1.2f;
     float waveMoneyCount;
     float tempWaveMoneyCount = 0;
     [SerializeField] TextMeshProUGUI moneyCountText;

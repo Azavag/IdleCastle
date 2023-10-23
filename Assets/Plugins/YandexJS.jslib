@@ -159,4 +159,10 @@ mergeInto(LibraryManager.library, {
       stringToUTF8(lang, buffer, bufferSize);
       return buffer;
     },
+
+    GetDomainExtern : function()
+    {
+      var deviceData = ysdk.environment.i18n.tld;   
+      myGameInstance.SendMessage('Link', 'SetDomain', domainData);
+    },
   });
